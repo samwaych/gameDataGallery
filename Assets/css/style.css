@@ -1,0 +1,143 @@
+/* Color Scheme: #082508  #250825  #250808  #082525 */
+
+.background {
+  background: linear-gradient(rgb(8, 37, 8), black) no-repeat center center fixed;
+}
+
+.titleHead {
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-weight: bolder;
+  font-size: 7vw;
+  color: #658665;
+  margin-top: 15px;
+  margin-bottom: -10px;
+}
+
+@media screen and (min-width: 1200px) {
+  .titleHead {
+    font-size: 80px;
+  }
+}
+
+.titleHead #tFirst {
+  font-family: fantasy;
+  font-size: 7.5vw;
+  -webkit-text-stroke: .5px #7c927c;
+  background-color: #082525;
+  background-image: linear-gradient(45deg, #082525, rgba(255, 255, 255, 0.2));
+  background-size: 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  -moz-text-fill-color: transparent;
+}
+
+.badge {
+  border: solid rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+  margin-left: 10px;
+  vertical-align: 30% !important;
+}
+
+.controls {
+  background-color: #250825;
+  border: solid 1px rgba(255, 255, 255, 0.2);
+}
+
+.navText {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.bttn {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  border: solid 3px rgba(255, 255, 255, 0.6);
+  border-radius: 5px;
+}
+
+.bttn:hover {
+  color: rgba(255, 255, 255, 1.0); 
+  border-color: rgba(255, 255, 255, 1.0);
+}
+
+.formBg, .formBg:active {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+select option:first-child{
+  color: lightgray !important;
+}
+
+.source {
+  color: #7c927c;
+  padding-top: 5px;
+}
+
+#link {
+  text-decoration: underline;
+}
+
+#link:hover {
+  color: white;
+}
+
+.content {
+  border: solid 2px rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 0 !important;
+}
+
+.card-text {
+  height: 100px;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.bg-cst {
+  background-color: #082508;
+  padding: 0 4px;
+}
+
+.bttnCrd:hover {
+  opacity: 0.5;
+  filter: alpha(opacity=40);
+}
+
+a {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+a:visited {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 5px;  
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgb(214, 214, 214);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background:rgb(202, 202, 202);
+  border-radius: 10px;
+}
+
+input[type=search]::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+}
+
+
