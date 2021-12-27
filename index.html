@@ -9,12 +9,23 @@
   </head>
 
   <body class="background">
-    <div class="mx-auto text-center">
+    <div class="d-flex justify-content-between">
       <h1 class="titleHead"><span id="tFirst">Game Data</span>
         <span class="badge badge-secondary">GALLERY</span>
-      </h1><br>
-    </div>
-    <div class="container controls px-3">
+      </h1>
+      <div class="d-flex searchControl">
+        <div class="pr-3">
+          <p class="searchLabel">SEARCH:</p>
+        </div>
+        <div class="searchBox">
+          <input type="search" class="form-control formBg" id="searchTerm" placeholder="Search All">
+        </div>
+        <div class=btn-contr>
+          <a href="javascript:void(0);" class="bttn" id="submit">GO</a>
+        </div>
+      </div>
+    </div><br>
+    <div class="d-flex justify-content-center controls px-3">
       <div class="d-flex justify-content-center align-items-center">
         <div>
           <select class="form-select formBg" id="platform">
@@ -72,16 +83,7 @@
             <option value="metacritic">Metacritic (Worst)</option>
           </select>
         </div>
-        <div class="px-3">
-        </div>
-        <div class="px-1 mt-3">
-          <p class="navText">SEARCH:</p>
-        </div>
         <div class="px-2">
-          <input type="search" class="form-control formBg" id="searchTerm" placeholder="Search All">
-        </div>
-        <div>
-          <a href="javascript:void(0);" class="bttn" id="submit">GO</a>
         </div>
       </div>
     </div>
@@ -93,6 +95,11 @@
     <div id="content"></div>
   </body>
 
+  <script
+    src="https://code.jquery.com/jquery-3.6.0.js"
+    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous">
+  </script>
   <script type="text/javascript" src="Assets/javascript/gds.js"></script>
 
 </html>

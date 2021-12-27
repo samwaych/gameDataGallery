@@ -43,7 +43,7 @@ async function getGameData() {
 
 // Create containing div from fetched data and assign values for structureCard function
 function cardData(data) {
-  let html = "<div class='container content my-4'>"
+  let html = "<div class='d-flex content my-4'>"
   html += "<div class='d-flex flex-wrap justify-content-center my-2' id='cards'></div>"
   html += "</div>"
   document.getElementById("content").innerHTML = html;
@@ -129,6 +129,10 @@ function getOrder() {
   let selection = document.getElementById("orderBy").value
   return (selection !== "Order By" ? order = "&ordering=" + selection : order = "");
 }
+
+$('#myModal').on('shown.bs.modal', function () {
+  $('#myInput').trigger('focus')
+})
 
 /* let gameReq = 'https://rawg.io/api/games/' + id + '?key=' + key + '&description'; 
     fetch(gameReq).then(
