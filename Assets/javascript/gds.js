@@ -84,8 +84,8 @@ function cardData(data) {
 
 // create html card content from fetched data
 function structureCard(id, img, title, release, esrb, metac, genr, plfm, store) {
-  html = "<div class='card m-2' id=" + id + " style='width: 255px;'>"
-  html += "<a href='javascript:void(0);' class='bttnCrd' id='detail'>"
+  html = "<div class='card m-2' style='width: 255px;'>"
+  html += "<a href='javascript:void(0);' onclick='showDscr(this.id)' data-bs-toggle='modal' data-bs-target='#modal' class='bttnCrd' id=" + id + ">"
   html += "<img class='card-img-top' src='" + img + "'alt='Game Image'>"
   html += "<div class='card-body'>"
   html += "<h5 class='card-title'>" + title + "</h5></a>"
@@ -130,9 +130,29 @@ function getOrder() {
   return (selection !== "Order By" ? order = "&ordering=" + selection : order = "");
 }
 
-$('#myModal').on('shown.bs.modal', function () {
-  $('#myInput').trigger('focus')
-})
+async function showDscr(ele) {
+  console.log(ele);
+  let gameReq = 'https://rawg.io/api/games/' + ele + '?key=' + key + '&description'; 
+  await fetch(gameReq).then(
+    response => response.json()).then((results) => {
+      console.log(results)
+      document.getElementById("gameTitle").innerHTML = results.name;
+      document.getElementById("m-header").style.backgroundImage=`url(${results.background_image})`;
+      document.getElementById("m-header").style.backgroundSize="cover";
+      document.getElementById("m-header").style.backgroundRepeat="no-repeat";
+      let descr = results.description_raw;
+      if (descr) {
+        document.getElementById("modalBody").innerHTML = descr 
+      } 
+      else {
+        document.getElementById("modalBody").innerHTML = "No description available"
+      }
+    })
+  .catch(err => {
+    console.error(err);
+  })
+}
+
 
 /* let gameReq = 'https://rawg.io/api/games/' + id + '?key=' + key + '&description'; 
     fetch(gameReq).then(
