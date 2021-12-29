@@ -1,9 +1,3 @@
-/* Color Scheme: 
-  --color-darkBlue: #1F2833;
-  --color-black: #0B0C10;
-  --color-lightGrey: #c5c6c8;
-  --color-offWhite: #66fcf1;
-  --color-grey: #45a29f; */
 
 :root {
   --color-one: 46, 100, 102; /* metalGrey */
@@ -53,6 +47,13 @@
   margin-right: 10%;
 }
 
+@media only screen and (max-width: 870px){
+  .searchControl {
+    margin-left: 10%;
+  }
+}
+
+
 .controls {
   background: linear-gradient(
     90deg, rgba(var(--color-two), 0.919) 3%, rgba(var(--color-one), 0.8) 25.23%, rgba(var(--color-two), 0.919) 100%);
@@ -70,15 +71,17 @@
 }
 
 .searchBox {
-  width: 20vw;
+  width:20vw;
 }
 
 .btn-contr {
-  margin-top: 3px;
+  margin-top: 5px;
 }
 
 .bttn {
-  font-size: 22px;
+  font-weight: bold;
+  padding: 2px;
+  font-size: 20px;
   margin-left: 5px;
   color: rgba(var(--color-three));
   text-decoration: none;
@@ -87,8 +90,8 @@
 }
 
 .bttn:hover {
-  color: rgba(255, 255, 255, 1.0); 
-  border-color: rgba(255, 255, 255, 1.0);
+  color: rgba(var(--color-four)); 
+  border-color: rgba(var(--color-four));
 }
 
 .formBg, .formBg:active {
@@ -110,7 +113,7 @@ select option:first-child{
 }
 
 #link:hover {
-  color: white;
+  color: rgba(var(--color-five));
 }
 
 .content {
@@ -174,7 +177,7 @@ input[type=search]::-webkit-search-cancel-button {
   color: rgba(var(--color-three));
   margin: -20px 10%;
   font-size: 12px;
-  float: right;
+  float: left;
 }
 
 .modal-backdrop {
@@ -212,7 +215,6 @@ input[type=search]::-webkit-search-cancel-button {
 }
 
 #modalBody {
-  height: 150px;
   overflow-y: auto;
 }
 
@@ -228,12 +230,12 @@ input[type=search]::-webkit-search-cancel-button {
 }
 
 #btn-back-to-top {
-  color: rgba(var(--color-four));
+  color: rgba(var(--color-four), .3);
   height: 60px;
   width: 60px;
-  border: rgba(var(--color-five), .4);
-  background-color: rgba(var(--color-five), .2);
-  border-radius: 50%;
+  border: rgba(var(--color-five), .5);
+  background-color: rgba(var(--color-five), .3);
+  border-radius: 5px;
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -242,9 +244,23 @@ input[type=search]::-webkit-search-cancel-button {
 }
 
 #btn-back-to-top:hover {
+  color: rgba(var(--color-four), 1);
   background-color: rgba(var(--color-five), .5);
 }
 
+.form-select {
+  padding: 5px 30px 5px 5px;
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: rgba(var(--color-two));
+}
 
+#readMore {
+  font-size: 14px;
+  border: none;
+  color: rgba(var(--color-one));
+  background-color: white;
+}
 
 

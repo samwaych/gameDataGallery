@@ -15,6 +15,7 @@ document.getElementById("platform").addEventListener("change", getPlatform);
 document.getElementById("genre").addEventListener("change", getGenre);
 document.getElementById("players").addEventListener("change", getPlayers);
 document.getElementById("orderBy").addEventListener("change", getOrder);
+document.getElementById("btn-x").addEventListener("click", clearContent);
 
 var key = '8881e08db1df45ea9a122d358156e2e1'
 var platform ="";
@@ -49,9 +50,9 @@ function cardData(data) {
   html += "</div>"
   document.getElementById("content").innerHTML = html;
 
-  if (data) {
+  if (!data) {
     console.log(data)
-    document.getElementById("cards").innerHTML = "<p class='sorryMsg'>Oops! It looks like RAWG's api is down. Please try again later.</p>"
+    document.getElementById("cards").innerHTML = "<p class='sorryMsg'>Oops! It looks like the RAWG api is down. Please try again later.</p>"
     return;
   }
 
@@ -166,23 +167,32 @@ function textSplit(descr) {
       for(let i = 0; i < 50; i++) {
         first.push(newDescr[i]); 
       }
-      document.getElementById("modalBody").innerHTML = "<p>" + first.join(" ") + "<span id='dots'>...</span><span id='more'>"
+      let mBody = document.getElementById("modalBody");
+      mBody.innerHTML = "<p>" + first.join(" ") + "<span id='dots'>...</span><span id='more'>"
 
       for(let i = 50; i < newDescr.length; i++) {
         second.push(newDescr[i]);
       }
-      let mbSecond =  document.getElementById("more");
-      mbSecond.innerHTML = second.join(" ") + "</span></p>"
-      mbSecond.innerHTML += "<button onclick='myFunction()' id='myBtn'>Read more</button>"
+      document.getElementById("more").innerHTML = " " + second.join(" ")
+      mBody.innerHTML += "</span></p>"
+      mBody.innerHTML += "<button onclick='readMore()' id='readMore'>Read more ↓</button>"
   } 
   else {
     mBody.innerHTML = "No description available"
   }
 }
 
+function clearContent() {
+  let mHeader = document.getElementById("m-header");
+  mHeader.innerHtml = "";
+  mHeader.style.backgroundImage= "none";
+  document.getElementById("gameTitle").innerHTML = "";
+  document.getElementById("modalBody").innerHTML = "";
+}
+
 // Back-to-top button section
 //Get the button
-let mybutton = document.getElementById("btn-back-to-top");
+let upButton = document.getElementById("btn-back-to-top");
 
 // When the user scrolls down 20px from the top of the document, show the button
 window.onscroll = function () {
@@ -194,29 +204,33 @@ function scrollFunction() {
     document.body.scrollTop > 20 ||
     document.documentElement.scrollTop > 20
   ) {
-    mybutton.style.display = "block";
+    upButton.style.display = "block";
   } else {
-    mybutton.style.display = "none";
+    upButton.style.display = "none";
   }
 }
 // When the user clicks on the button, scroll to the top of the document
-mybutton.addEventListener("click", backToTop);
+upButton.addEventListener("click", backToTop);
 
 function backToTop() {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
 }
-// End back-to-top section
 
+// Read more section
+function readMore() {
+  var dots = document.getElementById("dots");
+  var moreText = document.getElementById("more");
+  var btnText = document.getElementById("readMore");
 
-/* let gameReq = 'https://rawg.io/api/games/' + id + '?key=' + key + '&description'; 
-    fetch(gameReq).then(
-      response => response.json()).then((results) => {
-        let descr = results.description_raw;
+  if (dots.style.display === "none") {
+    dots.style.display = "inline";
+    btnText.innerHTML = "Read more ↓";
+    moreText.style.display = "none";
+  } else {
+    dots.style.display = "none";
+    btnText.innerHTML = "Read less ↑";
+    moreText.style.display = "inline";
+  }
+}
 
-        let htmlContent = structureCard(img, title);
-        document.getElementById("cards").innerHTML += htmlContent;
-      })
-    .catch(err => {
-      console.error(err);
-    });*/
