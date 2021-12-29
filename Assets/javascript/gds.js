@@ -38,6 +38,7 @@ async function getGameData() {
     })
   .catch(err => {
     console.error(err);
+    cardData(err);
   });
 }
 
@@ -47,6 +48,12 @@ function cardData(data) {
   html += "<div class='d-flex flex-wrap justify-content-center my-2' id='cards'></div>"
   html += "</div>"
   document.getElementById("content").innerHTML = html;
+
+  if (data) {
+    console.log(data)
+    document.getElementById("cards").innerHTML = "<p class='sorryMsg'>Oops! It looks like RAWG's api is down. Please try again later.</p>"
+    return;
+  }
 
   for (let i in data.results) {
     let addr = data.results[i];
@@ -135,23 +142,71 @@ async function showDscr(ele) {
   let gameReq = 'https://rawg.io/api/games/' + ele + '?key=' + key + '&description'; 
   await fetch(gameReq).then(
     response => response.json()).then((results) => {
+      let mHeader = document.getElementById("m-header");
+      let descr = results.description_raw;
       console.log(results)
       document.getElementById("gameTitle").innerHTML = results.name;
-      document.getElementById("m-header").style.backgroundImage=`url(${results.background_image})`;
-      document.getElementById("m-header").style.backgroundSize="cover";
-      document.getElementById("m-header").style.backgroundRepeat="no-repeat";
-      let descr = results.description_raw;
-      if (descr) {
-        document.getElementById("modalBody").innerHTML = descr 
-      } 
-      else {
-        document.getElementById("modalBody").innerHTML = "No description available"
-      }
+      mHeader.style.backgroundImage=`url(${results.background_image})`;
+      mHeader.style.backgroundSize="cover";
+      mHeader.style.backgroundRepeat="no-repeat";
+      
+      textSplit(descr);
     })
   .catch(err => {
     console.error(err);
   })
 }
+
+// limit description to maximum number of words and assign the rest to hidden div for expansion
+function textSplit(descr) {
+  if (descr) {
+    let newDescr = descr.split(" ");
+    let first = [];
+    let second = [];
+      for(let i = 0; i < 50; i++) {
+        first.push(newDescr[i]); 
+      }
+      document.getElementById("modalBody").innerHTML = "<p>" + first.join(" ") + "<span id='dots'>...</span><span id='more'>"
+
+      for(let i = 50; i < newDescr.length; i++) {
+        second.push(newDescr[i]);
+      }
+      let mbSecond =  document.getElementById("more");
+      mbSecond.innerHTML = second.join(" ") + "</span></p>"
+      mbSecond.innerHTML += "<button onclick='myFunction()' id='myBtn'>Read more</button>"
+  } 
+  else {
+    mBody.innerHTML = "No description available"
+  }
+}
+
+// Back-to-top button section
+//Get the button
+let mybutton = document.getElementById("btn-back-to-top");
+
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function () {
+  scrollFunction();
+};
+
+function scrollFunction() {
+  if (
+    document.body.scrollTop > 20 ||
+    document.documentElement.scrollTop > 20
+  ) {
+    mybutton.style.display = "block";
+  } else {
+    mybutton.style.display = "none";
+  }
+}
+// When the user clicks on the button, scroll to the top of the document
+mybutton.addEventListener("click", backToTop);
+
+function backToTop() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+// End back-to-top section
 
 
 /* let gameReq = 'https://rawg.io/api/games/' + id + '?key=' + key + '&description'; 
