@@ -23,14 +23,26 @@ var genre = "";
 var players = "";
 var order = "";
 var game ="";
-var page = '&page=1';
+var pageNum;
 var request;
+var next = false;
 
-// perform fetch and return results as JSON
-async function getGameData() {
-  getGame();
+// Perform initial fetch and return results as JSON
+async function getGameData(event) {
+  if (event.target.id === "submit") { //get id of clicked element to set correct page number for fetch request
+    pageNum = 1;
+    getGame();
+    let html = "<div class='d-flex content my-4'>"
+    html += "<div class='d-flex flex-wrap justify-content-center my-2' id='cards'></div>"
+    html += "</div>"
+    document.getElementById("content").innerHTML = html;
+    next = true;
+  }
+  else {
+    return;
+  }
   request = `https://rawg.io/api/games?key=${key}${platform}${genre}${players}` +
-    `${order}${game}${page}&page_size=40`;
+    `${order}${game}&page=${pageNum}&page_size=40`;
     await fetch(request).then(
     response => response.json()).then((results) => {
       console.log(request);
@@ -43,12 +55,25 @@ async function getGameData() {
   });
 }
 
-// Create containing div from fetched data and assign values for structureCard function
+// Perform next page of search results fetch
+async function getNextResults() {
+  pageNum++;
+  request = `https://rawg.io/api/games?key=${key}${platform}${genre}${players}` +
+    `${order}${game}&page=${pageNum}&page_size=40`;
+    await fetch(request).then(
+    response => response.json()).then((results) => {
+      console.log(request);
+      console.log(results);
+      cardData(results);
+    })
+  .catch(err => {
+    console.error(err);
+    cardData(err);
+  });
+}
+
+// Create containing cards from fetched data and assign values for structureCard function
 function cardData(data) {
-  let html = "<div class='d-flex content my-4'>"
-  html += "<div class='d-flex flex-wrap justify-content-center my-2' id='cards'></div>"
-  html += "</div>"
-  document.getElementById("content").innerHTML = html;
 
   if (!data) {
     console.log(data)
@@ -67,8 +92,8 @@ function cardData(data) {
     let platforms = [];
     let genres = [];
     let stores = [];
-    (!addr.background_image ? img = "Assets/images/no_image.jpg" : img = addr.background_image);
-    (!addr.released ?  rel = "N/A" : rel = addr.released);
+    (!addr.background_image ? img = "Assets/images/no_image.jpg" : img = addr.background_image); // Handle games missing certain data values
+    (!addr.released ?  rel = "N/A" : rel = addr.released); // by assigning 'missing' notifications to variables
     (!addr.esrb_rating ?  esrb = "N/A" : esrb = addr.esrb_rating.name);
     (!addr.metacritic ?  metac = "N/A" : metac = addr.metacritic);
 
@@ -94,7 +119,7 @@ function cardData(data) {
 function structureCard(id, img, title, release, esrb, metac, genr, plfm, store) {
   html = "<div class='card m-2' style='width: 255px;'>"
   html += "<a href='javascript:void(0);' onclick='showDscr(this.id)' data-bs-toggle='modal' data-bs-target='#modal' class='bttnCrd' id=" + id + ">"
-  html += "<img class='card-img-top' src='" + img + "'alt='Game Image'>"
+  html += "<div class='card-img-top' style='background-image: url(" + img + "); background-size: cover; background-position: center;' alt='Game Image'></div>"
   html += "<div class='card-body'>"
   html += "<h5 class='card-title'>" + title + "</h5></a>"
   html += "<p class='card-text'><span class='text-muted'>Released: </span>" + release + "<br>"
@@ -138,18 +163,20 @@ function getOrder() {
   return (selection !== "Order By" ? order = "&ordering=" + selection : order = "");
 }
 
+// Fetches specific game's data and populates modal
 async function showDscr(ele) {
   console.log(ele);
   let gameReq = 'https://rawg.io/api/games/' + ele + '?key=' + key + '&description'; 
   await fetch(gameReq).then(
     response => response.json()).then((results) => {
       let mHeader = document.getElementById("m-header");
-      let descr = results.description_raw;
+      let descr = results.description;
       console.log(results)
       document.getElementById("gameTitle").innerHTML = results.name;
       mHeader.style.backgroundImage=`url(${results.background_image})`;
       mHeader.style.backgroundSize="cover";
       mHeader.style.backgroundRepeat="no-repeat";
+      mHeader.style.backgroundPosition="center top";
       
       textSplit(descr);
     })
@@ -168,13 +195,13 @@ function textSplit(descr) {
         first.push(newDescr[i]); 
       }
       let mBody = document.getElementById("modalBody");
-      mBody.innerHTML = "<p>" + first.join(" ") + "<span id='dots'>...</span><span id='more'>"
+      mBody.innerHTML = "<p>" + first.join(" ") + "<span id='dots'>...</span><a id='more'>"
 
       for(let i = 50; i < newDescr.length; i++) {
         second.push(newDescr[i]);
       }
       document.getElementById("more").innerHTML = " " + second.join(" ")
-      mBody.innerHTML += "</span></p>"
+      mBody.innerHTML += "</a></p>"
       mBody.innerHTML += "<button onclick='readMore()' id='readMore'>Read more ↓</button>"
   } 
   else {
@@ -233,4 +260,14 @@ function readMore() {
     moreText.style.display = "inline";
   }
 }
+
+// Load more cards when page end reached
+$(window).scroll(function() {
+  if($(window).scrollTop() == $(document).height() - $(window).height()) {
+    if (next) {
+      console.log(next)
+      getNextResults();
+    }
+  }
+});
 
