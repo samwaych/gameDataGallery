@@ -11,6 +11,7 @@ document.getElementById("searchTerm").addEventListener("keyup", function(event) 
 });
 
 document.getElementById("submit").addEventListener("click", getGameData);
+document.getElementById("filter").addEventListener("click", getGameData);
 document.getElementById("platform").addEventListener("change", getPlatform);
 document.getElementById("genre").addEventListener("change", getGenre);
 document.getElementById("players").addEventListener("change", getPlayers);
@@ -30,17 +31,14 @@ var next = false;
 // Perform initial fetch and return results as JSON
 async function getGameData(event) {
   if (event.target.id === "submit") { //get id of clicked element to set correct page number for fetch request
-    pageNum = 1;
     getGame();
-    let html = "<div class='d-flex content my-4'>"
-    html += "<div class='d-flex flex-wrap justify-content-center my-2' id='cards'></div>"
-    html += "</div>"
-    document.getElementById("content").innerHTML = html;
-    next = true;
   }
-  else {
-    return;
-  }
+  pageNum = 1;
+  let html = "<div class='d-flex content my-4'>"
+  html += "<div class='d-flex flex-wrap justify-content-center my-2' id='cards'></div>"
+  html += "</div>"
+  document.getElementById("content").innerHTML = html;
+  next = true;
   request = `https://rawg.io/api/games?key=${key}${platform}${genre}${players}` +
     `${order}${game}&page=${pageNum}&page_size=40`;
     await fetch(request).then(

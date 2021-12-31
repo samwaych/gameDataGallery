@@ -68,6 +68,14 @@
   color: rgba(var(--color-five));
 }
 
+#filter:hover {
+  color: rgba(var(--color-four));
+}
+
+#filter {
+  font-size: 16px;
+}
+
 .searchBox {
   width:20vw;
 }
@@ -111,7 +119,7 @@ select option:first-child{
 }
 
 #link:hover {
-  color: rgba(var(--color-five));
+  color: rgba(var(--color-four));
 }
 
 .content {
