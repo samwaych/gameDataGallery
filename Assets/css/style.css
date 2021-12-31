@@ -219,11 +219,13 @@ input[type=search]::-webkit-search-cancel-button {
 
 .modal-dialog {
   max-width: 850px;
+  margin-top: 150px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .modal-content {
-  margin-right: 5%;
-  margin-left: 5%;
+  margin-right: 10%;
 }
 
 #modalBody {
