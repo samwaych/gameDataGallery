@@ -1,3 +1,7 @@
+// steam store reviews api; needs app id: https://store.steampowered.com/appreviews/<app_id>?json=1
+// steam game name/id api https://api.steampowered.com/ISteamApps/GetAppList/v2/
+// steam game details api, needs app id: https://store.steampowered.com/api/appdetails?appids=<app_id>
+
 
 // trigger the search function when 'Enter' is pressed
 document.getElementById("searchTerm").addEventListener("keyup", function(event) {
@@ -66,16 +70,23 @@ async function getNextResults() {
     })
   .catch(err => {
     console.error(err);
-    cardData(err);
+    console.log("No more results.")
   });
 }
 
 // Create containing cards from fetched data and assign values for structureCard function
 function cardData(data) {
+  if (!data.next) {
+    next = false;
+  }
 
   if (!data) {
     console.log(data)
     document.getElementById("cards").innerHTML = "<p class='sorryMsg'>Oops! It looks like the RAWG api is down. Please try again later.</p>"
+    return;
+  }
+  if (data.count === 0) {
+    document.getElementById("cards").innerHTML = "<p class='sorryMsg'>Sorry, nothing matches that criteria.</p>"
     return;
   }
 
@@ -134,7 +145,7 @@ function structureCard(id, img, title, release, esrb, metac, genr, plfm, store) 
 // get search keyword to add to fetch request
 function getGame() {
   let searchTerm = document.getElementById("searchTerm").value;
-  return (searchTerm ? game = "&search_precise=true&search=" + searchTerm.split(' ').join('-').toLowerCase() : game = "");
+  return (searchTerm ? game = "&search_exact=true&search=" + searchTerm.split(' ').join('-').toLowerCase() : game = "");
 }
 
 // get platform selection to add to api request

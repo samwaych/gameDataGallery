@@ -277,4 +277,13 @@ input[type=search]::-webkit-search-cancel-button {
   background-color: white;
 }
 
+.contentBg {
+  background: url("../../Assets/images/contentBG.png");
+  background-size: cover;
+  background-position: center;
+  height: 600px;
+  width: 400px;
+  margin: 10px;
+}
+
 
