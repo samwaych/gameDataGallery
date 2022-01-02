@@ -1,6 +1,7 @@
 // steam store reviews api; needs app id: https://store.steampowered.com/appreviews/<app_id>?json=1
 // steam game name/id api https://api.steampowered.com/ISteamApps/GetAppList/v2/
 // steam game details api, needs app id: https://store.steampowered.com/api/appdetails?appids=<app_id>
+// steam api key: BB52EBAB7849A0A6549F5CAC68D60F0E
 
 
 // trigger the search function when 'Enter' is pressed
@@ -22,7 +23,15 @@ document.getElementById("players").addEventListener("change", getPlayers);
 document.getElementById("orderBy").addEventListener("change", getOrder);
 document.getElementById("btn-x").addEventListener("click", clearContent);
 
-var key = '8881e08db1df45ea9a122d358156e2e1'
+const key = '8881e08db1df45ea9a122d358156e2e1'
+const steamKey = 'BB52EBAB7849A0A6549F5CAC68D60F0E'
+const steamAppIdsURL = "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
+const fetchParams = {
+  method: "GET",
+  headers: {
+    "X-Auth-Token": steamKey
+  }
+};
 var platform ="";
 var genre = "";
 var players = "";
@@ -31,6 +40,7 @@ var game ="";
 var pageNum;
 var request;
 var next = false;
+var appID;
 
 // Perform initial fetch and return results as JSON
 async function getGameData(event) {
@@ -215,11 +225,30 @@ async function showDscr(ele) {
       let html = setGameDetails(rel, esrb, meta, devs.join(', '), pubs.join(', '), genre.join(', '), 
         plfrm.join(', '), stores.join(', '))
       document.getElementById("gameDetail").innerHTML = html;
+      getSteamAppId(results.name);
     })
   .catch(err => {
     console.error(err);
   })
 }
+
+// Get Steam Store id from API
+function getSteamAppId(name) {
+  fetch(steamAppIdsURL, fetchParams).then(
+    response => response.json()).then((results) => {
+      console.log(results);
+      for (let i in results) {
+        if (results[i].name === name) {
+          appID = results[i].appid;
+        }
+      }
+      console.log(appID);
+    })
+  .catch(err => {
+    console.error(err);
+  });
+}
+
 
 // Limit description to maximum number of words and assign the rest to hidden div for expansion
 function textSplit(descr) {
@@ -248,15 +277,19 @@ function textSplit(descr) {
 
 // Assigns data to remainding divs in modal footer for selected game
 function setGameDetails(rel, esrb, meta, devs, pubs, genre, plfrm, stores) {
-  let html = "<div class='row'><div class='col-sm'><p><span class='text-hl'>Released: </span>" + rel + "<br>"
+  let html = "<div class='row'><div class='col-sm'><span class='text-hl'>Genres: </span>" + genre + "<br>"
   html += "<span class='text-hl'>Metacritic: </span><span class='rounded border border-1 metc'>" + meta + "</span><br>"
   html += "<span class='text-hl'>ESRB: </span>" + esrb + "<br></div>"
-  html += "<div class='col-sm'><span class='text-hl'>Genres: </span>" + genre + "<br>"
-  html += "<span class='text-hl'>Developers: </span>" + devs + "<br>"
-  html += "<span class='text-hl'>Publishers: </span>" + pubs + "<br>"
+  html += "<div class='col-sm'><span class='text-hl'>Released: </span>" + rel + "<br>"
+  html += "<span class='text-hl'>Developer(s): </span>" + devs + "<br>"
+  html += "<span class='text-hl'>Publisher(s): </span>" + pubs + "<br><br>"
   html += "</div></div>"
   html += "<span class='text-hl'>Platforms: </span>" + plfrm + "<br>"
   html += "<span class='text-hl'>Stores: </span>" + stores + "</p>"
+  
+  if (stores.includes("Steam", 0)) { // Check if Steam is listed as a store and provide a link for Steam Store api call function
+    html += "<a href='javascript:void(0);' id='steam'>See Steam Store details <span class='fa fa-angle-down'></span></a>"
+  }
   return html;
 }
 
