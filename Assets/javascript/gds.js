@@ -178,9 +178,12 @@ async function showDscr(ele) {
     response => response.json()).then((results) => {
       let mHeader = document.getElementById("m-header");
       let descr = results.description;
-      let rel = results.released;
-      let esrb = results.esrb_rating.name;
-      let meta = results.metacritic;
+      let rel;
+      (results.released ?  rel = results.released : rel = "N/A");
+      let esrb;
+      (results.esrb_rating ? esrb = results.esrb_rating.name : esrb = "N/A");
+      let meta;
+      (results.metacritic ?  meta = results.metacritic : meta = "N/A");
       let devs = [];
       let pubs = [];
       let genre = [];
