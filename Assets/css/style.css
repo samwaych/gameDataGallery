@@ -219,7 +219,7 @@ input[type=search]::-webkit-search-cancel-button {
 
 .modal-dialog {
   max-width: 850px;
-  margin-top: 150px;
+  margin-top: 110px;
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -284,6 +284,30 @@ input[type=search]::-webkit-search-cancel-button {
   height: 600px;
   width: 400px;
   margin: 10px;
+}
+
+.modal-footer {
+  justify-content: left;
+  display: block;
+  background-color: rgba(var(--color-two));
+}
+
+#gameDetail {
+  font-size: 14px;
+  color: white;
+}
+
+.more:hover {
+  color: black;
+  text-decoration: none;
+}
+
+.text-hl {
+  color: rgba(var(--color-three));
+}
+
+.metc {
+  color: rgba(var(--color-four));
 }
 
 

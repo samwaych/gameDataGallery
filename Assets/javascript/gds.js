@@ -70,7 +70,6 @@ async function getNextResults() {
     })
   .catch(err => {
     console.error(err);
-    console.log("No more results.")
   });
 }
 
@@ -79,7 +78,6 @@ function cardData(data) {
   if (!data.next) {
     next = false;
   }
-
   if (!data) {
     console.log(data)
     document.getElementById("cards").innerHTML = "<p class='sorryMsg'>Oops! It looks like the RAWG api is down. Please try again later.</p>"
@@ -180,54 +178,98 @@ async function showDscr(ele) {
     response => response.json()).then((results) => {
       let mHeader = document.getElementById("m-header");
       let descr = results.description;
+      let rel = results.released;
+      let esrb = results.esrb_rating.name;
+      let meta = results.metacritic;
+      let devs = [];
+      let pubs = [];
+      let genre = [];
+      let plfrm = [];
+      let stores = [];
       console.log(results)
       document.getElementById("gameTitle").innerHTML = results.name;
-      mHeader.style.backgroundImage=`url(${results.background_image})`;
+      mHeader.style.backgroundImage=`url(${results.background_image})`; // sets properties for background image on modal
       mHeader.style.backgroundSize="cover";
       mHeader.style.backgroundRepeat="no-repeat";
       mHeader.style.backgroundPosition="center top";
       
       textSplit(descr);
+
+      for(let i in results.developers) {
+        devs.push(results.developers[i].name)
+      }
+      for(let i in results.publishers) {
+        pubs.push(results.publishers[i].name)
+      }
+      for(let i in results.genres) {
+        genre.push(results.genres[i].name)
+      }
+      for(let i in results.platforms) {
+        plfrm.push(results.platforms[i].platform.name)
+      }
+      for(let i in results.stores) {
+        stores.push(results.stores[i].store.name)
+      }
+
+      let html = setGameDetails(rel, esrb, meta, devs.join(', '), pubs.join(', '), genre.join(', '), 
+        plfrm.join(', '), stores.join(', '))
+      document.getElementById("gameDetail").innerHTML = html;
     })
   .catch(err => {
     console.error(err);
   })
 }
 
-// limit description to maximum number of words and assign the rest to hidden div for expansion
+// Limit description to maximum number of words and assign the rest to hidden div for expansion
 function textSplit(descr) {
   if (descr) {
     let newDescr = descr.split(" ");
     let first = [];
     let second = [];
-      for(let i = 0; i < 50; i++) {
-        first.push(newDescr[i]); 
-      }
-      let mBody = document.getElementById("modalBody");
-      mBody.innerHTML = "<p>" + first.join(" ") + "<span id='dots'>...</span><a id='more'>"
 
-      for(let i = 50; i < newDescr.length; i++) {
-        second.push(newDescr[i]);
-      }
-      document.getElementById("more").innerHTML = " " + second.join(" ")
-      mBody.innerHTML += "</a></p>"
-      mBody.innerHTML += "<button onclick='readMore()' id='readMore'>Read more ↓</button>"
+    for(let i = 0; i < 50; i++) {
+      first.push(newDescr[i]); 
+    }
+
+    let mBody = document.getElementById("modalBody");
+    mBody.innerHTML = first.join(" ") + "<span id='dots'>...</span><a class='more' id='more'></a>"
+
+    for(let i = 50; i < newDescr.length; i++) {
+      second.push(newDescr[i]);
+    }
+    console.log(second.join(" "));
+    document.getElementById("more").innerHTML = " " + second.join(" "); // add the second string array to the hidden 'more' section
+    mBody.innerHTML += "<button onclick='readMore()' id='readMore'>Read more ↓</button>"
   } 
   else {
     mBody.innerHTML = "No description available"
   }
 }
 
+// Assigns data to remainding divs in modal footer for selected game
+function setGameDetails(rel, esrb, meta, devs, pubs, genre, plfrm, stores) {
+  let html = "<p><span class='text-hl'>Released: </span>" + rel + "<br>"
+  html += "<span class='text-hl'>ESRB: </span>" + esrb + "<br>"
+  html += "<span class='text-hl'>Metacritic: </span><span class='rounded border border-1 metc'>" + meta + "</span><br>"
+  html += "<span class='text-hl'>Developers: </span>" + devs + "<br>"
+  html += "<span class='text-hl'>Publishers: </span>" + pubs + "<br>"
+  html += "<span class='text-hl'>Genres: </span>" + genre + "<br>"
+  html += "<span class='text-hl'>Platforms: </span>" + plfrm + "<br><br>"
+  html += "<span class='text-hl'>Stores: </span>" + stores + "</p>"
+  return html;
+}
+
+// Clears modal content after it is closed
 function clearContent() {
   let mHeader = document.getElementById("m-header");
   mHeader.innerHtml = "";
   mHeader.style.backgroundImage= "none";
   document.getElementById("gameTitle").innerHTML = "";
   document.getElementById("modalBody").innerHTML = "";
+  document.getElementById("gameDetail").innerHTML = ""
 }
 
-// Back-to-top button section
-//Get the button
+// Back-to-top button section ///////////////////////////////////////////////////////////////
 let upButton = document.getElementById("btn-back-to-top");
 
 // When the user scrolls down 20px from the top of the document, show the button
@@ -252,21 +294,36 @@ function backToTop() {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
 }
+///////////////////////////////////////////////////////////////////////////////////////////
 
 // Read more section
 function readMore() {
   var dots = document.getElementById("dots");
-  var moreText = document.getElementById("more");
+  var moreText = document.getElementsByClassName("more");
   var btnText = document.getElementById("readMore");
 
   if (dots.style.display === "none") {
     dots.style.display = "inline";
     btnText.innerHTML = "Read more ↓";
-    moreText.style.display = "none";
+    try {
+      for (let i in moreText) {
+        moreText[i].style.display = "none";
+        }
+    }
+    catch {
+      return;
+    }
   } else {
     dots.style.display = "none";
     btnText.innerHTML = "Read less ↑";
-    moreText.style.display = "inline";
+    try {
+      for (let i in moreText) {
+        moreText[i].style.display = "inline";
+      }
+    }
+    catch {
+      return;
+    }
   }
 }
 
