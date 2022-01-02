@@ -48,7 +48,6 @@ async function getGameData(event) {
     await fetch(request).then(
     response => response.json()).then((results) => {
       console.log(request);
-      console.log(results);
       cardData(results);
     })
   .catch(err => {
@@ -189,7 +188,6 @@ async function showDscr(ele) {
       let genre = [];
       let plfrm = [];
       let stores = [];
-      console.log(results)
       document.getElementById("gameTitle").innerHTML = results.name;
       mHeader.style.backgroundImage=`url(${results.background_image})`; // sets properties for background image on modal
       mHeader.style.backgroundSize="cover";
@@ -240,7 +238,6 @@ function textSplit(descr) {
     for(let i = 50; i < newDescr.length; i++) {
       second.push(newDescr[i]);
     }
-    console.log(second.join(" "));
     document.getElementById("more").innerHTML = " " + second.join(" "); // add the second string array to the hidden 'more' section
     mBody.innerHTML += "<button onclick='readMore()' id='readMore'>Read more ↓</button>"
   } 
@@ -251,13 +248,14 @@ function textSplit(descr) {
 
 // Assigns data to remainding divs in modal footer for selected game
 function setGameDetails(rel, esrb, meta, devs, pubs, genre, plfrm, stores) {
-  let html = "<p><span class='text-hl'>Released: </span>" + rel + "<br>"
-  html += "<span class='text-hl'>ESRB: </span>" + esrb + "<br>"
+  let html = "<div class='row'><div class='col-sm'><p><span class='text-hl'>Released: </span>" + rel + "<br>"
   html += "<span class='text-hl'>Metacritic: </span><span class='rounded border border-1 metc'>" + meta + "</span><br>"
+  html += "<span class='text-hl'>ESRB: </span>" + esrb + "<br></div>"
+  html += "<div class='col-sm'><span class='text-hl'>Genres: </span>" + genre + "<br>"
   html += "<span class='text-hl'>Developers: </span>" + devs + "<br>"
   html += "<span class='text-hl'>Publishers: </span>" + pubs + "<br>"
-  html += "<span class='text-hl'>Genres: </span>" + genre + "<br>"
-  html += "<span class='text-hl'>Platforms: </span>" + plfrm + "<br><br>"
+  html += "</div></div>"
+  html += "<span class='text-hl'>Platforms: </span>" + plfrm + "<br>"
   html += "<span class='text-hl'>Stores: </span>" + stores + "</p>"
   return html;
 }
