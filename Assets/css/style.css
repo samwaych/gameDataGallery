@@ -199,10 +199,10 @@ input[type=search]::-webkit-search-cancel-button {
   background-color: rgba(0, 0, 0, 0.5);
   font-size: 40px;
   color: white;
-  margin-bottom: -80px;
   line-height: 100%;
   padding: 5px 10px 12px 10px;
   max-width: 600px;
+  margin-top: 110px !important;
 }
 
 #btn-x {
@@ -226,6 +226,7 @@ input[type=search]::-webkit-search-cancel-button {
 
 .modal-content {
   margin-right: 10%;
+  border-radius: 7px;
 }
 
 #modalBody {
@@ -314,4 +315,6 @@ input[type=search]::-webkit-search-cancel-button {
   color: rgba(var(--color-four));
 }
 
-
+.border-1 {
+  padding: 1px;
+}

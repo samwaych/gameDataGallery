@@ -1,7 +1,3 @@
-// steam store reviews api; needs app id: https://store.steampowered.com/appreviews/<app_id>?json=1
-// steam game name/id api https://api.steampowered.com/ISteamApps/GetAppList/v2/
-// steam game details api, needs app id: https://store.steampowered.com/api/appdetails?appids=<app_id>
-// steam api key: BB52EBAB7849A0A6549F5CAC68D60F0E
 
 
 // trigger the search function when 'Enter' is pressed
@@ -24,7 +20,7 @@ document.getElementById("orderBy").addEventListener("change", getOrder);
 document.getElementById("btn-x").addEventListener("click", clearContent);
 
 const key = '8881e08db1df45ea9a122d358156e2e1'
-const steamKey = 'BB52EBAB7849A0A6549F5CAC68D60F0E'
+const steamKey = 'secret'
 const steamAppIdsURL = "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
 const fetchParams = {
   method: "GET",
@@ -198,7 +194,7 @@ async function showDscr(ele) {
       let genre = [];
       let plfrm = [];
       let stores = [];
-      document.getElementById("gameTitle").innerHTML = results.name;
+      document.getElementById("mTitle").innerHTML = `<h5 class="modal-title" id="gameTitle">${results.name}</h5>;`
       mHeader.style.backgroundImage=`url(${results.background_image})`; // sets properties for background image on modal
       mHeader.style.backgroundSize="cover";
       mHeader.style.backgroundRepeat="no-repeat";
@@ -298,7 +294,7 @@ function clearContent() {
   let mHeader = document.getElementById("m-header");
   mHeader.innerHtml = "";
   mHeader.style.backgroundImage= "none";
-  document.getElementById("gameTitle").innerHTML = "";
+  document.getElementById("mTitle").innerHTML = "";
   document.getElementById("modalBody").innerHTML = "";
   document.getElementById("gameDetail").innerHTML = ""
 }
