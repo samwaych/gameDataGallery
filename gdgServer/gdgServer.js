@@ -38,7 +38,7 @@ app.get('/steam/info/:appid', function(httpRequest, httpResponse) {
 app.get('/steam/reviews/:appid', function(httpRequest, httpResponse) {
   // Calculate the Steam API URL we want to use
   const appid = httpRequest.params.appid;
-  request.get(urlRevs + appid + '?json=1', function(error, steamHttpResponse, steamHttpBody) {
+  request.get(urlRevs + appid + '?json=1&purchase_type=all', function(error, steamHttpResponse, steamHttpBody) {
       httpResponse.setHeader('Content-Type', 'application/json');
       httpResponse.send(steamHttpBody);
   });

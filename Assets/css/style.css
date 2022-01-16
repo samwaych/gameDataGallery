@@ -33,6 +33,14 @@
   -moz-text-fill-color: transparent;
 }
 
+@-moz-document url-prefix() {
+  .titleHead #tFirst {
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    -webkit-text-stroke: 2px rgba(var(--color-four));
+    letter-spacing: -2px;
+  }
+}
+
 .badge {
   font-size: 30px;
   border: solid rgba(var(--color-four));
@@ -184,6 +192,18 @@ a:visited {
   border-radius: 10px;
 }
 
+/* Firefox scroll bar */
+.scroller {
+  overflow-y: scroll;
+  scrollbar-color: #0A4C95 #C2D2E4;
+}
+
+.scroller::-webkit-scrollbar-thumb {
+  background: #7f7f7f;
+  border-right: 1px solid white;
+}
+/***************************/
+
 input[type=search]::-webkit-search-cancel-button {
   -webkit-appearance: searchfield-cancel-button;
 }
@@ -196,7 +216,7 @@ input[type=search]::-webkit-search-cancel-button {
 }
 
 .modal-backdrop {
-  opacity:0.75 !important;
+  opacity:0.85 !important;
 }
 
 .modal-header {
@@ -240,6 +260,7 @@ input[type=search]::-webkit-search-cancel-button {
 
 #modalBody {
   overflow-y: auto;
+  background-color: rgba(var(--color-five));
 }
 
 #more {
@@ -285,6 +306,13 @@ input[type=search]::-webkit-search-cancel-button {
   border: none;
   color: rgba(var(--color-one));
   background-color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+  box-shadow: 0px 0px 3px rgba(70, 70, 70, 0.2);
+}
+
+#readMore:active {
+  box-shadow: none;
 }
 
 .contentBg {
@@ -335,11 +363,52 @@ input[type=search]::-webkit-search-cancel-button {
   margin-top: 20px !important;
   margin: -.75rem;
   color:rgba(var(--color-five));
+  font-size: 16px;
 }
 
 .steam-header {
-  padding: 10px 20px;;
+  padding: 20px 20px 20px;
   font-size: 18px;
+}
+
+.steam-details {
+  padding: 20px 20px;
+}
+
+.steam-subheader {
+  color: rgb(177, 177, 177);
+  font-size: 14px;
+}
+
+.steam-time {
+  color:rgba(var(--color-four));
+  font-size: 12px; 
+}
+
+.hours {
+  font-size: 12px;
+}
+
+.recommend {
+  float: right;
+  font-size: 12px;
+  color: rgba(var(--color-four))
+}
+
+.not-recommend {
+  float: right;
+  font-size: 12px;
+  color: rgba(var(--color-three))
+}
+
+.steam-review {
+  padding: 10px;
+  background-color: rgba(var(--color-two), .5);
+  border: solid rgba(var(--color-one));
+  border-radius: 5px;
+  max-height: 125px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Slideshow container */
@@ -353,40 +422,58 @@ input[type=search]::-webkit-search-cancel-button {
 /* Hide the images by default */
 .mySlides {
   display: none;
+  width: 780px;
+  height: 438px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, .4);
-  background-color: rgba(var(--color-one));
+  background-color: black;
+  vertical-align: middle;
+}
+
+#lImg {
+  vertical-align: middle;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .cursor {
   cursor: pointer;
 }
 
+.img-container {
+  height: 438px;
+  width: 780px;
+  position: relative;
+  background-color: rgba(var(--color-two));
+}
+
 /* Next & previous buttons */
 .prev, .next {
   cursor: pointer;
   position: absolute;
-  top: 30%;
-  width: auto;
-  margin-top: 0px;
+  height: 100%;
+  top: 0;
   padding: 26px;
+  padding-top: 25%;
   color: rgba(var(--color-five), .2);
   font-weight: bold;
   font-size: 28px;
   transition: 0.6s ease;
-  border-radius: 0 5px 5px 0;
   user-select: none;
   -webkit-user-select: none;
 }
 
 /* Position the "next button" to the right */
 .next {
-  right: 20px;
-  border-radius: 5px 0 0 5px;
+  right: 0;
+}
+
+.prev {
+  left: 0;
 }
 
 /* On hover, add a black background color with a little bit see-through */
 .prev:hover, .next:hover {
-  background-color:rgba(var(--color-two), .9);
+  background-color:rgba(var(--color-two), .7);
   color: rgba(var(--color-three))
 }
 
@@ -395,7 +482,7 @@ input[type=search]::-webkit-search-cancel-button {
   overflow-y: hidden;
   height: 90px; /* Adjusts distance of horizontal thumbnail scrollbar */
   white-space: nowrap;
-  padding-top: 8px;
+  padding-top: 5px;
 }
 
 .slideRow:after {
@@ -406,7 +493,7 @@ input[type=search]::-webkit-search-cancel-button {
 
 /* Add a transparency effect for thumnbail images */
 .demo {
-  opacity: 0.50;
+  opacity: 0.60;
 }
 
 .active,
@@ -420,8 +507,8 @@ input[type=search]::-webkit-search-cancel-button {
 
 /* Six columns side by side */
 .thumbn {
-  width: 116px; /* Adjusts thumbnail width */
-  height: 65px;
+  height: 65px; /* Adjusts thumbnail height */
+  text-align: center;
   display: inline-block !important;
   background-color: rgba(var(--color-one));
   margin-right: 5px;
@@ -429,6 +516,16 @@ input[type=search]::-webkit-search-cancel-button {
 
 .active, .dot:hover {
   background-color: rgba(var(--color-three));
+}
+
+#sImg, #lImg {
+  max-width:100%;
+  max-height: 100%;
+}
+
+#sImg {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* Fading animation */

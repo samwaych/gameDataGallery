@@ -1,3 +1,7 @@
+/*fetch('https://api.rawg.io/api/platforms?key=8881e08db1df45ea9a122d358156e2e1').then(
+  response => response.json()).then((results) => {
+    console.log(results);
+  })*/
 
 // Get steam store app list on page load to save time in getting app ids
 window.onload = function() {
@@ -24,6 +28,10 @@ document.getElementById("players").addEventListener("change", getPlayers);
 document.getElementById("orderBy").addEventListener("change", getOrder);
 document.getElementById("btn-x").addEventListener("click", clearContent);
 
+// Clear modal content on close so it's ready for new content when shown again
+$('#modal').on('hide.bs.modal', clearContent);
+
+
 const key = '8881e08db1df45ea9a122d358156e2e1'
 const steamAppIdsURL = "http://localhost:4000/steam/list/";
 const steamInfoURL = "http://localhost:4000/steam/info/";
@@ -41,12 +49,13 @@ var pageNum;
 var request;
 var next = false;
 var appID;
+var steamGame = false;
 
 // Perform initial fetch and return results as JSON
 async function getGameData(event) {
-  if (event.target.id === "submit") { //get id of clicked element to set correct page number for fetch request
-    getGame();
-  }
+  /*if (event.target.id === "submit") { // how to get id of clicked element to set correct page number for fetch request
+  }*/
+  getGame();
   pageNum = 1;
   let html = "<div class='d-flex content my-4'>"
   html += "<div class='d-flex flex-wrap justify-content-center my-2' id='cards'></div>"
@@ -181,6 +190,7 @@ async function showDscr(ele) {
   let gameReq = 'https://rawg.io/api/games/' + ele + '?key=' + key + '&description'; 
   await fetch(gameReq).then(
     response => response.json()).then((results) => {
+      console.log(results);
       let descr = results.description;
       let rel;
       (results.released ?  rel = results.released : rel = "N/A");
@@ -195,27 +205,35 @@ async function showDscr(ele) {
       let stores = [];
       let name = results.name;
       let bgImg = results.background_image;
+      let tags = [];
       createModalHeader(name, bgImg);
       textSplit(descr);
 
-      for(let i in results.developers) {
-        devs.push(results.developers[i].name)
+      for (let i in results.developers) {
+        devs.push(results.developers[i].name);
       }
-      for(let i in results.publishers) {
-        pubs.push(results.publishers[i].name)
+      for (let i in results.publishers) {
+        pubs.push(results.publishers[i].name);
       }
-      for(let i in results.genres) {
-        genre.push(results.genres[i].name)
+      for (let i in results.genres) {
+        genre.push(results.genres[i].name);
       }
-      for(let i in results.platforms) {
-        plfrm.push(results.platforms[i].platform.name)
+      for (let i in results.platforms) {
+        plfrm.push(results.platforms[i].platform.name);
       }
-      for(let i in results.stores) {
-        stores.push(results.stores[i].store.name)
+      for (let i in results.stores) {
+        stores.push(results.stores[i].store.name);
+      }
+      for (let i in results.tags) {
+        tags.push(results.tags[i].name);
+      }
+
+      if (stores.includes("Steam")) {
+        steamGame = true;
       }
 
       let html = setGameDetails(rel, esrb, meta, devs.join(', '), pubs.join(', '), genre.join(', '), 
-        plfrm.join(', '), stores.join(', '))
+        plfrm.join(', '), stores.join(', '), tags.join(', '));
       document.getElementById("gameDetail").innerHTML = html;
       getSteamAppId(results.name.replace(/ *\([^)]*\) */g, "").toLowerCase()); // get game name and remove anything between parentheses to match steam name
     })
@@ -250,14 +268,28 @@ function getSteamAppId(name) {
         appList.push(steamAppList.applist.apps[i]);
       }
     }
-    console.log(appList);
-    gameAppId = appList[0].appid; // Return the first match in the results array
+    console.log(appList.length)
+    if (appList.length !== 0) {
+      console.log("first");
+      gameAppId = appList[0].appid; // Return the first match in the results array
+    }
+    else if (gameAppId === "") {
+      if (name.toLowerCase().includes("ii")){
+        app = steamAppList.applist.apps.find(element => element.name.toLowerCase() === name.replace("ii", "2"));
+        console.log(name.replace("ii ", "2")); 
+      }
+      if (name.toLowerCase().includes("iii")){
+        console.log(name.replace("iii", "3"));
+        app = steamAppList.applist.apps.find(element => element.name.toLowerCase() === name.replace("iii", "3")); 
+      }
+      gameAppId = app.appid;
+    }
   }
   catch { err => {
     console.error(err);
     }
   }
-  if (gameAppId) {
+  if (gameAppId && steamGame) {
     let html = "<div id='steamInfo'><a href='javascript:void(0);' onClick=getSteamInfo()>" + 
       "See Steam Store details <span class='fa fa-angle-down'></span></a></div>";
     document.getElementById("gameDetail").innerHTML += html;
@@ -273,35 +305,49 @@ function stringReducer(string) {
 }
 
 // Get Steam Store app list for later use or use previouisly stored copy for up to 7 days
-async function getSteamApps() {
+function getSteamApps() {
   console.log("Getting Steam Store list...");
   let exists = false;
   let today = new Date();
-  let listDate = parseDate((localStorage.getItem("listDate")));
-  console.log(`Stored list date is: ${listDate.toString()}`);
+  let listDate;
+  try {
+    listDate = parseDate((localStorage.getItem("listDate")));
+  }
+  catch {
+    listDate = undefined;
+  }
   if (typeof listDate !== 'undefined') {
     console.log("Stored listDate has value.");
     let diff = compareDate(listDate);
-    if (diff < 8) {
+    if (diff <= 7) {
       exists = true;
       performIndexedDB(exists);
     }
+    else {
+      fetchSteamStore(today);
+    }
   }
   else {
-    await fetch(steamAppIdsURL).then(
-      response => response.json()).then((results) => {
-        steamAppList = results;
-        console.log("Steam Store List API was used.")
-        exists = false;
-        performIndexedDB(exists);
-        localStorage.setItem("listDate",JSON.stringify(today));
-        })
-    .catch(err => {
-      console.error(err);
-    });
+    fetchSteamStore(today);
   }
-  console.log("Steam Store list acquired.");
+  
 };
+
+// Handles Steam Store App list fetch from API
+async function fetchSteamStore(today) {
+  await fetch(steamAppIdsURL).then(
+    response => response.json()).then((results) => {
+      steamAppList = results;
+      console.log("Steam Store list API was fetched.")
+      exists = false;
+      performIndexedDB(exists);
+      localStorage.setItem("listDate",JSON.stringify(today));
+      console.log("Steam Store list acquired.");
+      })
+  .catch(err => {
+    console.error(err);
+  });
+}
 
 // Handle indexedDB/store operations
 function performIndexedDB(exists) {
@@ -331,7 +377,7 @@ function performIndexedDB(exists) {
       let request = list.put({id: 1, value: steamAppList});
 
       request.onsuccess = function() { 
-        console.log("App list added to the store", request.result);
+        console.log("App list added to the indexedDB", request.result);
       };
 
       request.onerror = function() {
@@ -342,7 +388,7 @@ function performIndexedDB(exists) {
       let applist = list.getAll();
       applist.onsuccess = () => {
         steamAppList = applist.result[0].value;
-        console.log(steamAppList);
+        console.log("Steam Store list acquired.");
       }
     };
 
@@ -365,38 +411,48 @@ function compareDate(listDate) {
   console.log()
   var diffTime = date.getTime() - listDate.getTime();  // To calculate the time difference of two dates
   var numDays = diffTime / (1000 * 3600 * 24);  // To calculate the no. of days between two dates
-  console.log(`${Math.round(numDays)} days since Steam Store app list fetch.`);
+  console.log(`${Math.round((numDays + Number.EPSILON) * 100)/100} days since Steam Store app list fetch.`);
   return numDays;
 };
 
 // Get selected game Steam Store info
-async function getSteamInfo() {
+function getSteamInfo() {
   if (gameAppId) {
-    await fetch(steamInfoURL + gameAppId).then(
-      response => response.json()).then((results) => {
-        console.log(results[gameAppId].success)
-          if (results[gameAppId].success === false) {
-            document.getElementById("steamInfo").innerHTML = "Steam Store details unavailable for this game." + 
-              " Please try searching for a different/newer version."
-          }
-          else {
+    getSteamMedia();
+  }
+};
+
+// Get Steam Store media and details
+async function getSteamMedia() {
+  await fetch(steamInfoURL + gameAppId).then(
+    response => response.json()).then((results) => {
+      console.log(results[gameAppId].success)
+        if (results[gameAppId].success === false) {
+          document.getElementById("steamInfo").innerHTML = "Steam Store details are unavailable for this game." + 
+            " Please try searching for a different/newer version."
+        }
+        else {
+          getSteamReview();
           gameInfo = results;
           console.log(gameInfo);
-          constructSteamInfo();
-          }
-        })
-    .catch(err => {
-      console.error(err);
-    });
-    await fetch(steamReviewsURL + gameAppId).then(
-      response => response.json()).then((reviews) => {
-        gameReviews = reviews;
-        console.log(gameReviews);
-        })
-    .catch(err => {
-      console.error(err);
-    });
-  }
+        }
+      })
+  .catch(err => {
+    console.error(err);
+  });
+};
+
+// Get Steam Store reviews
+async function getSteamReview() {
+  await fetch(steamReviewsURL + gameAppId).then(
+    response => response.json()).then((reviews) => {
+      gameReviews = reviews;
+      console.log(gameReviews);
+      })
+  .catch(err => {
+    console.error(err);
+  });
+  constructSteamInfo();
 };
 
 // Configure steam app fetch results into html and replace 'steamInfo' div content
@@ -405,25 +461,88 @@ function constructSteamInfo() {
   let scrnshtsURL = gameInfo[steamId].data.screenshots;
   let html = `<div class='steamInfoSection' style='background-image: url("${gameInfo[steamId].data.background}");` + 
    "background-size: cover; background-position: center;' alt='Game Image'>"
-  html += "<h2 class='steam-header'>Steam Store Info</h2>"
+  html += "<h2 class='steam-header'>Steam Store Info <a href='https://store.steampowered.com/app/" + steamId + "' target='_blank'>" +
+    "<span><i class='fa fa-external-link'></i></span></a></h2>"
   html += "<div class='slideshow-container'>"
+  html += "<div class='img-container'>"
   for (let i in gameInfo[steamId].data.screenshots) {
     html += "<div class='mySlides fadeSlide'>"
-    html += "<a href='"+ scrnshtsURL[i].path_full +"' target='_blank'><img src="+ gameInfo[steamId].data.screenshots[i].path_full +" style='width: 100%'></div></a>"
+    html += "<a href='"+ scrnshtsURL[i].path_full +"' target='_blank'><img id='lImg' src="+ 
+      gameInfo[steamId].data.screenshots[i].path_full +" style='width: 100%'></div></a>"
   }
   html += "<a class='prev' onclick='plusSlides(-1)'>&#10094;</a>"
   html += "<a class='next' onclick='plusSlides(1)'>&#10095;</a>"
+  html += "</div>"
   html += "<div class='slideRow'>"
   for (let i in gameInfo[steamId].data.screenshots) {
     html += "<div class='thumbn'>"
-    html += `<img class="demo cursor" src="${gameInfo[steamId].data.screenshots[i].path_thumbnail}"` + 
+    html += `<img class="demo cursor" id="sImg" src="${gameInfo[steamId].data.screenshots[i].path_thumbnail}"` + 
       `style="width:100%" onclick="currentSlide(${i}+1)" alt="Thumbnail"></div>`
   }
-  html += "</div></div><br>"
+  html += "</div></div><br><div class='steam-details'><div class='row'><div class='col-sm'>"
+  let finalPrice;
+  let discount;
+  if (gameInfo[steamId].data.price_overview) {
+    finalPrice = gameInfo[steamId].data.price_overview.final_formatted;
+    discount = gameInfo[steamId].data.price_overview.discount_percent;
+  }
+  else {
+    finalPrice = "Not available for base game"
+    discount = "0"
+  }
+  html += `<span class='steam-subheader'>CURRENT PRICE: </span>${finalPrice}<br>`
+  html += `<span class='steam-subheader'>CURRENT DISCOUNT: </span>${discount}%<br>`
+  html += `<span class='steam-subheader'>STEAM RELEASE DATE: </span>${gameInfo[steamId].data.release_date.date}</div>`
+  html += `<div class='col-sm'><span class='steam-subheader'>REVIEW RATING: </span>
+    ${gameReviews.query_summary.review_score_desc}<br>`
+  let total_reviews = gameReviews.query_summary.total_reviews;
+  let positive_reviews = gameReviews.query_summary.total_positive
+  let positive_percent = Math.round(((positive_reviews / total_reviews) + Number.EPSILON) * 100);
+  console.log(positive_percent)
+  if (!positive_percent) {
+    positive_percent = 0;
+  }
+  html += `${positive_percent}<span class='steam-subheader'>% positive out of </span> ${numberWithCommas(gameReviews.query_summary.total_reviews)}`
+  html += "<span class='steam-subheader'> reviews</span><p></p><br>"
+  html += `</div><div><span class='steam-subheader'>SHORT DESCRIPTION: </span>${gameInfo[steamId].data.short_description}</div></div><p></p><br>`
+  html += "<span class='steam-subheader'>MOST HELPFUL PLAYER REVIEWS: </span>"
+  html += formatReviews();
+
   document.getElementById("steamInfo").innerHTML = html;
   initializeSlideShow();
 }
 
+// Format steam reviews for HTML
+function formatReviews() {
+  let review_html = "";
+  if (gameReviews.reviews.length !== 0) {
+    let length;
+    if (gameReviews.reviews.length >= 5) {
+      length = 5
+    }
+    else {length = gameReviews.reviews.length};
+    for (let i=0; i < length; i++) {  
+      let time = gameReviews.reviews[i].author.playtime_forever/60;
+      let review_time = numberWithCommas(Math.round(time * 10)/10)
+      review_html += `<div class="steam-review"><span class='steam-time'>Total Playtime: </span><span class='hours'>${review_time} hrs</span>`
+      if (gameReviews.reviews[i].voted_up === true) {
+        review_html += "<div class='recommend'>RECOMMENDED</div><br>"
+      }
+      else {
+        review_html += "<div class='not-recommend'>NOT RECOMMENDED</div><br>"
+      }
+      review_html += `${gameReviews.reviews[i].review.replace(/ *\[[^\]]*]/g, "")}</div><p></p>`; // remove everything between "[]"
+    }
+    
+  }
+  else {review_html = "Reviews not available for this game."}
+  return review_html;
+}
+
+// Format numbers to show comma separators
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
 
 // Split into two functions so 'Read more' function can be reused. Use objects to wrap the arrays in return.
 // Limit description to maximum number of words and assign the rest to hidden div for expansion
@@ -452,22 +571,24 @@ function textSplit(descr) {
 };
 
 // Assigns data to remainding divs in modal footer for selected game
-function setGameDetails(rel, esrb, meta, devs, pubs, genre, plfrm, stores) {
+function setGameDetails(rel, esrb, meta, devs, pubs, genre, plfrm, stores, tags) {
   let html = "<div class='row'><div class='col-sm'><span class='text-hl'>Genres: </span>" + genre + "<br>"
   html += "<span class='text-hl'>Metacritic: </span><span class='rounded border border-1 metc'>" + meta + "</span><br>"
-  html += "<span class='text-hl'>ESRB: </span>" + esrb + "<br></div>"
+  html += "<span class='text-hl'>ESRB: </span>" + esrb + "</div>"
   html += "<div class='col-sm'><span class='text-hl'>Released: </span>" + rel + "<br>"
   html += "<span class='text-hl'>Developer(s): </span>" + devs + "<br>"
   html += "<span class='text-hl'>Publisher(s): </span>" + pubs + "<br><br>"
   html += "</div></div>"
   html += "<span class='text-hl'>Platforms: </span>" + plfrm + "<br>"
-  html += "<span class='text-hl'>Stores: </span>" + stores + "</p>"
+  html += "<span class='text-hl'>Stores: </span>" + stores + "<p></p>"
+  html += "<span class='text-hl'>Tags: </span>" + tags + "<p></p>"
   
   return html;
 };
 
 // Clears modal content after it is closed
 function clearContent() {
+  steamGame = false;
   let mHeader = document.getElementById("m-header");
   mHeader.innerHtml = "";
   mHeader.style.backgroundImage= "none";
@@ -549,12 +670,13 @@ $(window).scroll(function() {
 
 /////////////////////////// Handle slideshow ///////////////////////////////
 var slideIndex = 1;
-var pause = false;
+var pause = true;
 
 // Initialize slideShow and delay autoSlide
 function initializeSlideShow() {
   showSlides(slideIndex);
-  setTimeout(autoSlides(), 5000); // Delay auto scrolling for 5 seconds
+  pause = false;
+  setTimeout(autoSlides, 8000); // Delay auto scrolling for 5 seconds
 }
 
 // Next/previous controls
@@ -565,7 +687,6 @@ function plusSlides(n) {
 
 // Thumbnail image controls
 function currentSlide(n) {
-  console.log(slideIndex);
   showSlides(slideIndex = n);
   pausePlay();
 }
@@ -573,6 +694,7 @@ function currentSlide(n) {
 // Pause autoSlide when user interacts with slide controls
 function pausePlay() {
   pause = true;
+  console.log(pause);
   setTimeout(() => {
     pause = false;
     }, 20000);
@@ -582,7 +704,6 @@ function showSlides(n) {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("demo");
   var i;
-  console.log("slides.length:" + slides.length);
   if (n > slides.length) {slideIndex = 1}
   if (n < 1) {slideIndex = slides.length}
   for (i = 0; i < slides.length; i++) {
@@ -591,7 +712,7 @@ function showSlides(n) {
   for (i = 0; i < dots.length; i++) {
     dots[i].className = dots[i].className.replace(" active", "");
   }
-  slides[slideIndex-1].style.display = "block";
+  slides[slideIndex-1].style.display = "inline-block";
   dots[slideIndex-1].className += " active";
   scrollTo();
 }
@@ -599,21 +720,26 @@ function showSlides(n) {
 function autoSlides() {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("demo");
-  if (pause === false) {
-    var i;
-    for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
+  try {
+    if (pause === false) {
+      var i;
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) {slideIndex = 1}
+      slides[slideIndex-1].style.display = "inline-block";
+      dots[slideIndex-1].className += " active";
+      scrollTo();
     }
-    for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-    }
-    slideIndex++;
-    if (slideIndex > slides.length) {slideIndex = 1}
-    slides[slideIndex-1].style.display = "block";
-    dots[slideIndex-1].className += " active";
-    scrollTo();
   }
-  setTimeout(autoSlides, 5000); // Change image every 5 seconds
+  catch {
+    return;
+  }
+  setTimeout(autoSlides, 6000); // Change image every 5 seconds
 }
 
 // Scroll thumbnail into view
@@ -623,7 +749,6 @@ function scrollTo() {
   let windowW = $( window ).width();
   let docW = $('#gameDetail').width();
   let diff = windowW - docW;
-  console.log(diff);
   $(".slideRow").animate({scrollLeft: navPos + position - diff/2 - 20}, 800);
 }
 ///////////////////////// End of SlideShow code //////////////////////////
