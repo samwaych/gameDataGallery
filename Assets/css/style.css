@@ -138,8 +138,41 @@ select option:first-child{
   margin: 0 10%;
 }
 
+.placeholder-card {
+  height: 390px;
+  background-color: rgba(var(--color-five));
+  text-align: center;
+  padding-top: 195px;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgba(var(--color-two), .7);
+}
+
+.loading:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4,end) 900ms infinite;      
+  animation: ellipsis steps(4,end) 900ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 20px;    
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 20px;    
+  }
+}
+
 .card {
   border: 1px solid rgba(var(--color-three));
+  width: 255px
 }
 
 .card-text {
@@ -297,7 +330,7 @@ input[type=search]::-webkit-search-cancel-button {
   padding: 5px 30px 5px 5px;
   font-size: 14px;
   line-height: 1.2;
-  font-weight: 400;
+  font-weight: 600 !important;
   color: rgba(var(--color-two));
 }
 
@@ -319,8 +352,10 @@ input[type=search]::-webkit-search-cancel-button {
   background: url("../../Assets/images/contentBG.png");
   background-size: cover;
   background-position: center;
-  height: 600px;
-  width: 600px;
+  height: 65vh;
+  width: 60vw;
+  max-height: 800px;
+  max-width: 600px;
   margin: 5px;
 }
 

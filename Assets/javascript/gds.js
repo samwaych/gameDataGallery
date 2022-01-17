@@ -61,6 +61,7 @@ async function getGameData(event) {
   html += "<div class='d-flex flex-wrap justify-content-center my-2' id='cards'></div>"
   html += "</div>"
   document.getElementById("content").innerHTML = html;
+  placeholderCards();
   next = true;
   request = rawgGameSearch + pageNum + platform + genre + players + order + game;
   console.log(request);
@@ -77,6 +78,7 @@ async function getGameData(event) {
 
 // Perform next page of search results fetch
 async function getNextResults() {
+  placeholderCards();
   pageNum++;
   request = rawgGameSearch + pageNum + platform + genre + players + order + game;
     await fetch(request).then(
@@ -139,7 +141,8 @@ function cardData(data) {
 
 // create html card content from fetched data
 function structureCard(id, img, title, release, esrb, metac, genr, plfm, store) {
-  html = "<div class='card m-2' style='width: 255px;'>"
+  removeElementsByClass("placeholder-card");
+  html = "<div class='card m-2'>"
   html += "<a href='javascript:void(0);' onclick='showDscr(this.id)' data-bs-toggle='modal' data-bs-target='#modal' class='bttnCrd' id=" + id + ">"
   html += "<div class='card-img-top' style='background-image: url(" + img + "); background-size: cover; background-position: center;' alt='Game Image'></div>"
   html += "<div class='card-body'>"
@@ -153,6 +156,23 @@ function structureCard(id, img, title, release, esrb, metac, genr, plfm, store) 
   html += "</div></div>"
 
   return html;
+}
+
+// Create placeholder cards while data loads
+function placeholderCards() {
+  let placeholder_html = ""; 
+  for (let i = 0; i < 40; i ++) {
+    placeholder_html += "<div class='card placeholder-card m-2'><div class='loading'>Loading</div></div>";
+  }
+  document.getElementById("cards").innerHTML += placeholder_html;
+}
+
+// Remove elements by class name
+function removeElementsByClass(className){
+  var elements = document.getElementsByClassName(className);
+  while(elements.length > 0){
+      elements[0].parentNode.removeChild(elements[0]);
+  }
 }
 
 // get search keyword to add to fetch request
