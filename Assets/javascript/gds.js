@@ -31,8 +31,8 @@ document.getElementById("btn-x").addEventListener("click", clearContent);
 // Clear modal content on close so it's ready for new content when shown again
 $('#modal').on('hide.bs.modal', clearContent);
 
-
-const key = '8881e08db1df45ea9a122d358156e2e1'
+const rawgGameSearch = "http://localhost:4000/RAWG/gameQuery/"
+const rawgDescrURL = "http://localhost:4000/RAWG/gameDescr/";
 const steamAppIdsURL = "http://localhost:4000/steam/list/";
 const steamInfoURL = "http://localhost:4000/steam/info/";
 const steamReviewsURL = "http://localhost:4000/steam/reviews/";
@@ -62,11 +62,12 @@ async function getGameData(event) {
   html += "</div>"
   document.getElementById("content").innerHTML = html;
   next = true;
-  request = `https://rawg.io/api/games?key=${key}${platform}${genre}${players}` +
-    `${order}${game}&page=${pageNum}&page_size=40`;
+  request = rawgGameSearch + pageNum + platform + genre + players + order + game;
+  console.log(request);
     await fetch(request).then(
     response => response.json()).then((results) => {
       cardData(results);
+      console.log(results)
     })
   .catch(err => {
     console.error(err);
@@ -77,8 +78,7 @@ async function getGameData(event) {
 // Perform next page of search results fetch
 async function getNextResults() {
   pageNum++;
-  request = `https://rawg.io/api/games?key=${key}${platform}${genre}${players}` +
-    `${order}${game}&page=${pageNum}&page_size=40`;
+  request = rawgGameSearch + pageNum + platform + genre + players + order + game;
     await fetch(request).then(
     response => response.json()).then((results) => {
       cardData(results);
@@ -187,7 +187,7 @@ function getOrder() {
 
 // Fetches specific game's data and populates modal
 async function showDscr(ele) {
-  let gameReq = 'https://rawg.io/api/games/' + ele + '?key=' + key + '&description'; 
+  let gameReq = rawgDescrURL + ele; 
   await fetch(gameReq).then(
     response => response.json()).then((results) => {
       console.log(results);
@@ -458,10 +458,11 @@ async function getSteamReview() {
 // Configure steam app fetch results into html and replace 'steamInfo' div content
 function constructSteamInfo() {
   let steamId = gameAppId;
+  let steamUrl = "https://store.steampowered.com/app/" + steamId;
   let scrnshtsURL = gameInfo[steamId].data.screenshots;
   let html = `<div class='steamInfoSection' style='background-image: url("${gameInfo[steamId].data.background}");` + 
    "background-size: cover; background-position: center;' alt='Game Image'>"
-  html += "<h2 class='steam-header'>Steam Store Info <a href='https://store.steampowered.com/app/" + steamId + "' target='_blank'>" +
+  html += `<h2 class='steam-header'>Steam Store Info <a href='${steamUrl}' target='_blank'>` +
     "<span><i class='fa fa-external-link'></i></span></a></h2>"
   html += "<div class='slideshow-container'>"
   html += "<div class='img-container'>"
@@ -490,10 +491,10 @@ function constructSteamInfo() {
     finalPrice = "Not available for base game"
     discount = "0"
   }
-  html += `<span class='steam-subheader'>CURRENT PRICE: </span>${finalPrice}<br>`
-  html += `<span class='steam-subheader'>CURRENT DISCOUNT: </span>${discount}%<br>`
-  html += `<span class='steam-subheader'>STEAM RELEASE DATE: </span>${gameInfo[steamId].data.release_date.date}</div>`
-  html += `<div class='col-sm'><span class='steam-subheader'>REVIEW RATING: </span>
+  html += `<span class='steam-subheader'>CURRENT PRICE: </span>${finalPrice}<br>`;
+  html += `<span class='steam-subheader'>CURRENT DISCOUNT: </span>${discount}%<br>`;
+  html += `<span class='steam-subheader'>STEAM RELEASE DATE: </span>${gameInfo[steamId].data.release_date.date}</div>`;
+  html += `<div class='col-sm'><span class='steam-subheader'>REVIEW RATING: </span>;
     ${gameReviews.query_summary.review_score_desc}<br>`
   let total_reviews = gameReviews.query_summary.total_reviews;
   let positive_reviews = gameReviews.query_summary.total_positive
@@ -503,10 +504,11 @@ function constructSteamInfo() {
     positive_percent = 0;
   }
   html += `${positive_percent}<span class='steam-subheader'>% positive out of </span> ${numberWithCommas(gameReviews.query_summary.total_reviews)}`
-  html += "<span class='steam-subheader'> reviews</span><p></p><br>"
+  html += "<span class='steam-subheader'> reviews</span><p></p><br>";
   html += `</div><div><span class='steam-subheader'>SHORT DESCRIPTION: </span>${gameInfo[steamId].data.short_description}</div></div><p></p><br>`
-  html += "<span class='steam-subheader'>MOST HELPFUL PLAYER REVIEWS: </span>"
+  html += "<span class='steam-subheader'>MOST HELPFUL PLAYER REVIEWS: </span>";
   html += formatReviews();
+  html += formatSpecs();
 
   document.getElementById("steamInfo").innerHTML = html;
   initializeSlideShow();
@@ -526,10 +528,10 @@ function formatReviews() {
       let review_time = numberWithCommas(Math.round(time * 10)/10)
       review_html += `<div class="steam-review"><span class='steam-time'>Total Playtime: </span><span class='hours'>${review_time} hrs</span>`
       if (gameReviews.reviews[i].voted_up === true) {
-        review_html += "<div class='recommend'>RECOMMENDED</div><br>"
+        review_html += "<div class='recommend'>RECOMMENDED</div><br>";
       }
       else {
-        review_html += "<div class='not-recommend'>NOT RECOMMENDED</div><br>"
+        review_html += "<div class='not-recommend right'>NOT RECOMMENDED</div><br>";
       }
       review_html += `${gameReviews.reviews[i].review.replace(/ *\[[^\]]*]/g, "")}</div><p></p>`; // remove everything between "[]"
     }
@@ -537,6 +539,21 @@ function formatReviews() {
   }
   else {review_html = "Reviews not available for this game."}
   return review_html;
+}
+
+// Format PC spec
+function formatSpecs() {
+  let min = gameInfo[gameAppId].data.pc_requirements.minimum;
+  let rec = gameInfo[gameAppId].data.pc_requirements.recommended;
+  let specs_html = "<div class='specs-title steam-subheader'>SYSTEM REQUIREMENTS</div><div class='row specs'>";
+  if (min) {
+    specs_html += `<div class='spec-container'>${min}</div>`;
+  };
+  if (rec) {
+    specs_html += `<div class='spec-container right'>${rec}</div>`;
+  }
+  specs_html += "</div>";
+  return specs_html;
 }
 
 // Format numbers to show comma separators
