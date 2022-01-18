@@ -22,6 +22,7 @@ document.getElementById("searchTerm").addEventListener("keyup", function(event) 
 
 document.getElementById("submit").addEventListener("click", getGameData);
 document.getElementById("filter").addEventListener("click", getGameData);
+document.getElementById("reset").addEventListener("click", filterReset);
 document.getElementById("platform").addEventListener("change", getPlatform);
 document.getElementById("genre").addEventListener("change", getGenre);
 document.getElementById("players").addEventListener("change", getPlayers);
@@ -52,6 +53,19 @@ var next = false;
 var appID;
 var steamGame = false;
 
+// Reset filters
+function filterReset() {
+  let element1 = document.getElementById("platform");
+  let element2 = document.getElementById("genre");
+  let element3 = document.getElementById("players");
+  let element4 = document.getElementById("orderBy");
+  element1.value = "default";
+  element2.value = "default";
+  element3.value = "default";
+  element4.value = "default";
+  platform = genre = players = order = ""; // set multiple variables to an empty value to clear search
+}
+
 // Perform initial fetch and return results as JSON
 async function getGameData(event) {
   /*if (event.target.id === "submit") { // how to get id of clicked element to set correct page number for fetch request
@@ -64,6 +78,7 @@ async function getGameData(event) {
   document.getElementById("content").innerHTML = html;
   placeholderCards();
   next = true;
+  console.log(platform + genre + players + order + game)
   request = rawgGameSearch + pageNum + platform + genre + players + order + game;
   console.log(request);
     await fetch(request).then(

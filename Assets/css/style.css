@@ -76,11 +76,19 @@
   color: rgba(var(--color-five));
 }
 
-#filter:hover {
+.filter:hover {
   color: rgba(var(--color-four));
 }
 
-#filter {
+.filter {
+  font-size: 16px;
+}
+
+.reset {
+  color:rgba(var(--color-three));
+}
+
+.divider {
   font-size: 16px;
 }
 
