@@ -515,7 +515,7 @@ function constructSteamInfo() {
   html += `<span class='steam-subheader'>CURRENT PRICE: </span>${finalPrice}<br>`;
   html += `<span class='steam-subheader'>CURRENT DISCOUNT: </span>${discount}%<br>`;
   html += `<span class='steam-subheader'>STEAM RELEASE DATE: </span>${gameInfo[steamId].data.release_date.date}</div>`;
-  html += `<div class='col-sm'><span class='steam-subheader'>REVIEW RATING: </span>;
+  html += `<div class='col-sm'><span class='steam-subheader'>REVIEW RATING: </span> 
     ${gameReviews.query_summary.review_score_desc}<br>`
   let total_reviews = gameReviews.query_summary.total_reviews;
   let positive_reviews = gameReviews.query_summary.total_positive
