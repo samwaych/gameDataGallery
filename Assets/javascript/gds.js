@@ -31,11 +31,12 @@ document.getElementById("btn-x").addEventListener("click", clearContent);
 // Clear modal content on close so it's ready for new content when shown again
 $('#modal').on('hide.bs.modal', clearContent);
 
-const rawgGameSearch = "http://localhost:4000/RAWG/gameQuery/"
-const rawgDescrURL = "http://localhost:4000/RAWG/gameDescr/";
-const steamAppIdsURL = "http://localhost:4000/steam/list/";
-const steamInfoURL = "http://localhost:4000/steam/info/";
-const steamReviewsURL = "http://localhost:4000/steam/reviews/";
+const herokuURL =  "https://young-journey-77972.herokuapp.com/" // "http://localhost:4000/"
+const rawgGameSearch = herokuURL + "RAWG/gameQuery/"
+const rawgDescrURL = herokuURL + "RAWG/gameDescr/";
+const steamAppIdsURL = herokuURL + "steam/list/";
+const steamInfoURL = herokuURL + "steam/info/";
+const steamReviewsURL = herokuURL + "steam/reviews/";
 var steamAppList;
 var gameAppId;
 var gameInfo;
