@@ -586,7 +586,9 @@ function formatReviews() {
       else {
         review_html += "<div class='not-recommend right'>NOT RECOMMENDED</div><br>";
       }
-      review_html += `${gameReviews.reviews[i].review.replace(/ *\[[^\]]*]/g, "")}</div><p></p>`; // remove everything between "[]"
+      let review = gameReviews.reviews[i].review.replace(/[\[]+/g, '<');
+      let formattedReview = review.replace(/[\]]+/g, '>');
+      review_html += `${formattedReview}</div><p></p>`; // remove everything between "[]"
     }
     
   }

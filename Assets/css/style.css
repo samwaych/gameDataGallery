@@ -7,6 +7,10 @@
   --color-five: 210, 232, 227; /* lightGrey */
 }
 
+h1 {
+  font-size: 20px;
+}
+
 .background {
   background: linear-gradient(rgba(var(--color-one)), rgba(var(--color-two))) no-repeat center center fixed;
 }
