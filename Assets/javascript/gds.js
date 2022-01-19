@@ -66,10 +66,31 @@ function filterReset() {
   platform = genre = players = order = ""; // set multiple variables to an empty value to clear search
 }
 
+// Check filter values for defult
+function defaultFilter() {
+  let platformValue = document.getElementById("platform").value;
+  if (platformValue === "default") {
+    platform = "";
+  }
+  let genreValue = document.getElementById("genre").value;
+  if (genreValue === "default") {
+    genre = "";
+  }
+  let playersValue = document.getElementById("players").value
+  if (playersValue === "default") {
+    players = "";
+  }
+  let orderValue = document.getElementById("orderBy").value
+  if (orderValue === "default") {
+    order = "";
+  }
+}
+
 // Perform initial fetch and return results as JSON
 async function getGameData(event) {
   /*if (event.target.id === "submit") { // how to get id of clicked element to set correct page number for fetch request
   }*/
+  defaultFilter();
   getGame();
   pageNum = 1;
   let html = "<div class='d-flex content my-4'>"
@@ -94,6 +115,7 @@ async function getGameData(event) {
 
 // Perform next page of search results fetch
 async function getNextResults() {
+  defaultFilter();
   placeholderCards();
   pageNum++;
   request = rawgGameSearch + pageNum + platform + genre + players + order + game;
