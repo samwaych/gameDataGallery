@@ -1,8 +1,3 @@
-/*fetch('https://api.rawg.io/api/platforms?key=8881e08db1df45ea9a122d358156e2e1').then(
-  response => response.json()).then((results) => {
-    console.log(results);
-  })*/
-
 // Get steam store app list on page load to save time in getting app ids
 window.onload = function() {
   getSteamApps();
