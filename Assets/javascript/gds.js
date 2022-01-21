@@ -61,7 +61,7 @@ function filterReset() {
   platform = genre = players = order = ""; // set multiple variables to an empty value to clear search
 }
 
-// Check filter values for defult
+// Check filter values for default
 function defaultFilter() {
   let platformValue = document.getElementById("platform").value;
   if (platformValue === "default") {
@@ -635,7 +635,7 @@ function textSplit(descr) {
       second.push(newDescr[i]);
     }
     document.getElementById("more").innerHTML = " " + second.join(" "); // add the second string array to the hidden 'more' section
-    mBody.innerHTML += "<button onclick='readMore(`dots`, `more`, `readMore`)'; id='readMore'>Read more ↓</button>"
+    mBody.innerHTML += "<p></p><button onclick='readMore(`dots`, `more`, `readMore`)'; id='readMore'>Read more ↓</button>"
   } 
   else {
     mBody.innerHTML = "No description available"
@@ -806,6 +806,7 @@ function autoSlides() {
       slides[slideIndex-1].style.display = "inline-block";
       dots[slideIndex-1].className += " active";
       scrollTo();
+      console.log(slideIndex);
     }
   }
   catch {

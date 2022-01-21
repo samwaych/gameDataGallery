@@ -242,7 +242,8 @@ a:visited {
 /* Firefox scroll bar */
 .scroller {
   overflow-y: scroll;
-  scrollbar-color: #0A4C95 #C2D2E4;
+  scrollbar-color: #971d1d rgb(158, 158, 158);
+  scrollbar-width: thin;
 }
 
 .scroller::-webkit-scrollbar-thumb {
