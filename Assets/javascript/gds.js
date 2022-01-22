@@ -629,13 +629,17 @@ function textSplit(descr) {
     };
 
     let mBody = document.getElementById("modalBody");
-    mBody.innerHTML = first.join(" ") + "<span id='dots'>...</span><a class='more' id='more'></a>"
+    mBody.innerHTML = first.join(" ") + "<span id='dots'></span><a class='more' id='more'></a>"
 
     for(let i = 50; i < newDescr.length; i++) {
       second.push(newDescr[i]);
     }
-    document.getElementById("more").innerHTML = " " + second.join(" "); // add the second string array to the hidden 'more' section
-    mBody.innerHTML += "<p></p><button onclick='readMore(`dots`, `more`, `readMore`)'; id='readMore'>Read more ↓</button>"
+    
+    if (second.length > 0) {
+      document.getElementById("dots").innerHTML = "..."
+      document.getElementById("more").innerHTML = " " + second.join(" "); // add the second string array to the hidden 'more' section
+      mBody.innerHTML += "<p></p><button onclick='readMore(`dots`, `more`, `readMore`)'; id='readMore'>Read more ↓</button>"
+    }
   } 
   else {
     mBody.innerHTML = "No description available"
