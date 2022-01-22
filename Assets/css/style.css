@@ -487,11 +487,11 @@ input[type=search]::-webkit-search-cancel-button {
 
 /* Slideshow container */
 .slideshow-container {
-  max-width: 1000px;
-  min-height: 530px;
+  max-width: 850px;
   position: relative;
   margin: auto;
   padding: 0 20px;
+  display: inline-block;
 }
 
 /* Hide the images by default */
