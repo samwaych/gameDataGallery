@@ -244,7 +244,10 @@ async function showDscr(ele) {
   await fetch(gameReq).then(
     response => response.json()).then((results) => {
       console.log(results);
-      let descr = results.description;
+      if (results.description) {
+        var descr = results.description;
+      }
+      else {descr = results.description_raw};
       let rel;
       (results.released ?  rel = results.released : rel = "N/A");
       let esrb;
