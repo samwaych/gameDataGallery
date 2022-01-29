@@ -622,32 +622,46 @@ function numberWithCommas(x) {
 // Split into two functions so 'Read more' function can be reused. Use objects to wrap the arrays in return.
 // Limit description to maximum number of words and assign the rest to hidden div for expansion
 function textSplit(descr) {
-  if (descr) {
-    let newDescr = descr.split(" ");
-    let first = [];
-    let second = [];
-
-    for(let i = 0; i < 50; i++) {
-      first.push(newDescr[i]); 
-    };
-
-    let mBody = document.getElementById("modalBody");
-    mBody.innerHTML = first.join(" ") + "<span id='dots'></span><a class='more' id='more'></a>"
-
-    for(let i = 50; i < newDescr.length; i++) {
-      second.push(newDescr[i]);
+  try {
+    if (descr) {
+      textSplitCore(descr, 50)
+    } 
+    else {
+      mBody.innerHTML = "No description available"
     }
-    
-    if (second.length > 0) {
-      document.getElementById("dots").innerHTML = "..."
-      document.getElementById("more").innerHTML = " " + second.join(" "); // add the second string array to the hidden 'more' section
-      mBody.innerHTML += "<p></p><button onclick='readMore(`dots`, `more`, `readMore`)'; id='readMore'>Read more ↓</button>"
+  }
+  catch {
+    if (descr) {
+      textSplitCore(descr, 45);
+    } 
+    else {
+      mBody.innerHTML = "No description available"
     }
-  } 
-  else {
-    mBody.innerHTML = "No description available"
   }
 };
+
+function textSplitCore(descr, length) {
+  let newDescr = descr.split(" ");
+  let first = [];
+  let second = [];
+
+  for(let i = 0; i < length; i++) {
+    first.push(newDescr[i]); 
+  };
+
+  let mBody = document.getElementById("modalBody");
+  mBody.innerHTML = first.join(" ") + "<span id='dots'></span><a class='more' id='more'></a>"
+
+  for(let i = length; i < newDescr.length; i++) {
+    second.push(newDescr[i]);
+  }
+  
+  if (second.length > 0) {
+    document.getElementById("dots").innerHTML = "..."
+    document.getElementById("more").innerHTML = " " + second.join(" "); // add the second string array to the hidden 'more' section
+    mBody.innerHTML += "<p></p><button onclick='readMore(`dots`, `more`, `readMore`)'; id='readMore'>Read more ↓</button>"
+  }
+}
 
 // Assigns data to remainding divs in modal footer for selected game
 function setGameDetails(rel, esrb, meta, devs, pubs, genre, plfrm, stores, tags) {
