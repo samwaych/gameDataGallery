@@ -66,6 +66,9 @@ h1 {
   .searchControl {
     margin-left: 10%;
   }
+  .searchBox {
+    width: 100% !important;
+  }
 }
 
 .controls {
@@ -86,14 +89,19 @@ h1 {
 
 .filter:hover {
   color: rgba(var(--color-four));
+  border-color: rgba(var(--color-four));
 }
 
 .filter {
-  font-size: 16px;
+  font-size: 12px;
+  border: solid .17em rgba(var(--color-five));
+  border-radius: 3px;
+  padding: 3px;
 }
 
 .reset {
-  color:rgba(var(--color-three));
+  color:rgba(var(--color-three), .6);
+  border-color: rgba(var(--color-five), .6);
 }
 
 .divider {
@@ -138,6 +146,8 @@ select option:first-child{
 .source {
   color: rgba(var(--color-three));
   padding-top: 5px;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
 #link {
@@ -375,7 +385,7 @@ input[type=search]::-webkit-search-cancel-button {
   width: 60vw;
   max-height: 800px;
   max-width: 600px;
-  margin: 5px;
+  margin: 25px 5px;
 }
 
 .modal-footer {
