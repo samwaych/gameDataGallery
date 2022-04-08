@@ -50,14 +50,14 @@ var steamGame = false;
 
 // Reset filters
 function filterReset() {
-  let element1 = document.getElementById("platform");
-  let element2 = document.getElementById("genre");
-  let element3 = document.getElementById("players");
-  let element4 = document.getElementById("orderBy");
-  element1.value = "default";
-  element2.value = "default";
-  element3.value = "default";
-  element4.value = "default";
+  let ele1 = document.getElementById("platform");
+  let ele2 = document.getElementById("genre");
+  let ele3 = document.getElementById("players");
+  let ele4 = document.getElementById("orderBy");
+  ele1.value = "default";
+  ele2.value = "default";
+  ele3.value = "default";
+  ele4.value = "default";
   platform = genre = players = order = ""; // set multiple variables to an empty value to clear search
 }
 
@@ -96,7 +96,6 @@ async function getGameData(event) {
   next = true;
   console.log(platform + genre + players + order + game)
   request = rawgGameSearch + pageNum + platform + genre + players + order + game;
-  console.log(request);
     await fetch(request).then(
     response => response.json()).then((results) => {
       cardData(results);
@@ -464,7 +463,6 @@ function parseDate(input) {
 // Compare dates and return difference
 function compareDate(listDate) {
   var date = new Date();
-  console.log()
   var diffTime = date.getTime() - listDate.getTime();  // To calculate the time difference of two dates
   var numDays = diffTime / (1000 * 3600 * 24);  // To calculate the no. of days between two dates
   console.log(`${Math.round((numDays + Number.EPSILON) * 100)/100} days since Steam Store app list fetch.`);
@@ -761,7 +759,7 @@ $(window).scroll(function() {
   }
 });
 
-/////////////////////////// Handle slideshow ///////////////////////////////
+/////////////////////////// Slideshow Code ///////////////////////////////
 var slideIndex = 1;
 var pause = true;
 
@@ -793,6 +791,7 @@ function pausePlay() {
     }, 20000);
 }
 
+// Shows active slides and hides inactive slides on button input
 function showSlides(n) {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("demo");
@@ -810,6 +809,7 @@ function showSlides(n) {
   scrollTo();
 }
 
+// Automatically cycles through slides
 function autoSlides() {
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("demo");
