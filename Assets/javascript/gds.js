@@ -94,12 +94,12 @@ async function getGameData(event) {
   document.getElementById("content").innerHTML = html;
   placeholderCards();
   next = true;
-  console.log(platform + genre + players + order + game)
+  // console.log(platform + genre + players + order + game)
   request = rawgGameSearch + pageNum + platform + genre + players + order + game;
     await fetch(request).then(
     response => response.json()).then((results) => {
       cardData(results);
-      console.log(results)
+      // console.log(results)
     })
   .catch(err => {
     console.error(err);
@@ -128,7 +128,7 @@ function cardData(data) {
     next = false;
   }
   if (!data) {
-    console.log(data)
+    // console.log(data)
     document.getElementById("cards").innerHTML = "<p class='sorryMsg'>Oops! It looks like the RAWG api is down. Please try again later.</p>"
     return;
   }
@@ -242,7 +242,7 @@ async function showDscr(ele) {
   let gameReq = rawgDescrURL + ele; 
   await fetch(gameReq).then(
     response => response.json()).then((results) => {
-      console.log(results);
+      // console.log(results);
       if (results.description) {
         var descr = results.description;
       }
@@ -309,10 +309,10 @@ function createModalHeader(title, img) {
 
 // Get Steam Store app id from API by matching RAWG title to Steam's
 function getSteamAppId(name) {
-  console.log(name);
+  // console.log(name);
   gameAppId = "";
   let app = steamAppList.applist.apps.find(element => element.name.toLowerCase() === name); 
-  console.log(app);
+  // console.log(app);
   if (app) { 
     gameAppId = app.appid;
   }
@@ -323,9 +323,9 @@ function getSteamAppId(name) {
         appList.push(steamAppList.applist.apps[i]);
       }
     }
-    console.log(appList.length)
+    // console.log(appList.length)
     if (appList.length !== 0) {
-      console.log("first");
+      // console.log("first");
       gameAppId = appList[0].appid; // Return the first match in the results array
     }
     else if (gameAppId === "") {
@@ -334,7 +334,7 @@ function getSteamAppId(name) {
         console.log(name.replace("ii ", "2")); 
       }
       if (name.toLowerCase().includes("iii")){
-        console.log(name.replace("iii", "3"));
+        // console.log(name.replace("iii", "3"));
         app = steamAppList.applist.apps.find(element => element.name.toLowerCase() === name.replace("iii", "3")); 
       }
       gameAppId = app.appid;
@@ -480,7 +480,7 @@ function getSteamInfo() {
 async function getSteamMedia() {
   await fetch(steamInfoURL + gameAppId).then(
     response => response.json()).then((results) => {
-      console.log(results[gameAppId].success)
+      // console.log(results[gameAppId].success)
         if (results[gameAppId].success === false) {
           document.getElementById("steamInfo").innerHTML = "Steam Store details are unavailable for this game." + 
             " Please try searching for a different/newer version."
@@ -488,7 +488,7 @@ async function getSteamMedia() {
         else {
           getSteamReview();
           gameInfo = results;
-          console.log(gameInfo);
+          // console.log(gameInfo);
         }
       })
   .catch(err => {
@@ -501,7 +501,7 @@ async function getSteamReview() {
   await fetch(steamReviewsURL + gameAppId).then(
     response => response.json()).then((reviews) => {
       gameReviews = reviews;
-      console.log(gameReviews);
+      // console.log(gameReviews);
       })
   .catch(err => {
     console.error(err);
@@ -553,7 +553,7 @@ function constructSteamInfo() {
   let total_reviews = gameReviews.query_summary.total_reviews;
   let positive_reviews = gameReviews.query_summary.total_positive
   let positive_percent = Math.round(((positive_reviews / total_reviews) + Number.EPSILON) * 100);
-  console.log(positive_percent)
+  // console.log(positive_percent)
   if (!positive_percent) {
     positive_percent = 0;
   }
@@ -753,7 +753,7 @@ function readMore(dotsId, textClass, btnId) {
 $(window).scroll(function() {
   if($(window).scrollTop() == $(document).height() - $(window).height()) {
     if (next) {
-      console.log("Loading next results...");
+      // console.log("Loading next results...");
       getNextResults();
     }
   }
@@ -785,7 +785,7 @@ function currentSlide(n) {
 // Pause autoSlide when user interacts with slide controls
 function pausePlay() {
   pause = true;
-  console.log(pause);
+  // console.log(pause);
   setTimeout(() => {
     pause = false;
     }, 20000);
@@ -827,7 +827,7 @@ function autoSlides() {
       slides[slideIndex-1].style.display = "inline-block";
       dots[slideIndex-1].className += " active";
       scrollTo();
-      console.log(slideIndex);
+      // console.log(slideIndex);
     }
   }
   catch {
