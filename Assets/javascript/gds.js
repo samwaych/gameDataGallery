@@ -27,12 +27,12 @@ document.getElementById("btn-x").addEventListener("click", clearContent);
 // Clear modal content on close so it's ready for new content when shown again
 $('#modal').on('hide.bs.modal', clearContent);
 
-const herokuURL =  "https://young-journey-77972.herokuapp.com/" // "http://localhost:4000/"
-const rawgGameSearch = herokuURL + "RAWG/gameQuery/"
-const rawgDescrURL = herokuURL + "RAWG/gameDescr/";
-const steamAppIdsURL = herokuURL + "steam/list/";
-const steamInfoURL = herokuURL + "steam/info/";
-const steamReviewsURL = herokuURL + "steam/reviews/";
+const netlifyURL =  "illustrious-otter-725afc.netlify.app" // "http://localhost:4000/"
+const rawgGameSearch = netlifyURL + "RAWG/gameQuery/"
+const rawgDescrURL = netlifyURL + "RAWG/gameDescr/";
+const steamAppIdsURL = netlifyURL + "steam/list/";
+const steamInfoURL = netlifyURL + "steam/info/";
+const steamReviewsURL = netlifyURL + "steam/reviews/";
 var steamAppList;
 var gameAppId;
 var gameInfo;
