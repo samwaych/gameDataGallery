@@ -27,7 +27,7 @@ document.getElementById("btn-x").addEventListener("click", clearContent);
 // Clear modal content on close so it's ready for new content when shown again
 $('#modal').on('hide.bs.modal', clearContent);
 
-const netlifyURL =  "https://gdgapi.netlify.app/" // "http://localhost:4000/"
+const netlifyURL =  "https://gdgapi.netlify.app/api/" // "http://localhost:4000/"
 const rawgGameSearch = netlifyURL + "RAWG/gameQuery/"
 const rawgDescrURL = netlifyURL + "RAWG/gameDescr/";
 const steamAppIdsURL = netlifyURL + "steam/list/";
@@ -331,7 +331,7 @@ function getSteamAppId(name) {
     else if (gameAppId === "") {
       if (name.toLowerCase().includes("ii")){
         app = steamAppList.applist.apps.find(element => element.name.toLowerCase() === name.replace("ii", "2"));
-        console.log(name.replace("ii ", "2")); 
+        console.log(name.replace("ii", "2")); 
       }
       if (name.toLowerCase().includes("iii")){
         // console.log(name.replace("iii", "3"));
