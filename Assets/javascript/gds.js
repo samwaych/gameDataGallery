@@ -27,7 +27,7 @@ document.getElementById("btn-x").addEventListener("click", clearContent);
 // Clear modal content on close so it's ready for new content when shown again
 $('#modal').on('hide.bs.modal', clearContent);
 
-const netlifyURL =  "illustrious-otter-725afc.netlify.app" // "http://localhost:4000/"
+const netlifyURL =  "https://gdgapi.netlify.app/" // "http://localhost:4000/"
 const rawgGameSearch = netlifyURL + "RAWG/gameQuery/"
 const rawgDescrURL = netlifyURL + "RAWG/gameDescr/";
 const steamAppIdsURL = netlifyURL + "steam/list/";
