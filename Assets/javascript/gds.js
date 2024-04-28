@@ -27,12 +27,12 @@ document.getElementById("btn-x").addEventListener("click", clearContent);
 // Clear modal content on close so it's ready for new content when shown again
 $('#modal').on('hide.bs.modal', clearContent);
 
-const netlifyURL =  "https://gdgapi.netlify.app/api/" // "http://localhost:4000/"
-const rawgGameSearch = netlifyURL + "RAWG/gameQuery/"
-const rawgDescrURL = netlifyURL + "RAWG/gameDescr/";
-const steamAppIdsURL = netlifyURL + "steam/list/";
-const steamInfoURL = netlifyURL + "steam/info/";
-const steamReviewsURL = netlifyURL + "steam/reviews/";
+const renderURL =  "https://gDgServer.onrender.com/" // "http://localhost:4000/"
+const rawgGameSearch = renderURL + "RAWG/gameQuery/"
+const rawgDescrURL = renderURL + "RAWG/gameDescr/";
+const steamAppIdsURL = renderURL + "steam/list/";
+const steamInfoURL = renderURL + "steam/info/";
+const steamReviewsURL = renderURL + "steam/reviews/";
 var steamAppList;
 var gameAppId;
 var gameInfo;
