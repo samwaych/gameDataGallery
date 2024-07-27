@@ -1,7 +1,7 @@
 // Get steam store app list on page load to save time in getting app ids
 window.onload = function() {
   getSteamApps();
-  next = false; // Prevent quick reloads from setting value to true
+  next = false; // Prevent quick page refreshes from setting value to true
 };
 
 // trigger the search function when 'Enter' is pressed
